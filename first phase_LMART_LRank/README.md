@@ -45,19 +45,22 @@ runs/phase1/
 
 The high-level comparison is the separate `first_trials_report.html` in this
 directory. It embeds only summary data and does not require MLflow to render.
-The Archify source and standalone labeled diagram are in
-`assets/phase1-architecture.dataflow.json` and
+The repository-level Archify codebase map is in
+`assets/phase1-codebase.architecture.json` with the interactive artifact at
+`assets/phase1-codebase.html`. It shows how the entry point, helper modules, key
+functions, two training branches, evaluation, backtest, MLflow, and report
+outputs interact. The older experiment-flow diagram remains available as
 `assets/phase1-architecture.html`.
 
 To regenerate the diagram after editing the JSON (Archify is installed by the
 skill installer into the local Codex skills directory):
 
 ```bash
-node /Users/grokking/.codex/skills/archify/bin/archify.mjs validate dataflow \
-  assets/phase1-architecture.dataflow.json --quality showcase --json
-node /Users/grokking/.codex/skills/archify/bin/archify.mjs deliver dataflow \
-  assets/phase1-architecture.dataflow.json assets/phase1-architecture.html \
-  --quality showcase --json
+node /Users/grokking/.codex/skills/archify/bin/archify.mjs validate architecture \
+  assets/phase1-codebase.architecture.json --repo-root .. --quality showcase --json
+node /Users/grokking/.codex/skills/archify/bin/archify.mjs deliver architecture \
+  assets/phase1-codebase.architecture.json assets/phase1-codebase.html \
+  --repo-root .. --quality showcase --json
 ```
 
 The checked reproduction produced MLflow runs `592df6fd444a40b2a5fa4bcec0b489c8`

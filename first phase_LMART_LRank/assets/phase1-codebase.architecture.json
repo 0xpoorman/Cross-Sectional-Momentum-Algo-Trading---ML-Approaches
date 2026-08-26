@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Phase 1 Learning-to-Rank Codebase",
+    "output": "phase1-codebase.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/0xpoorman/Cross-Sectional-Momentum-Algo-Trading---ML-Approaches",
+      "revision": "225f7e2d640265ae1c73a405050fb57d497cd088"
+    },
+    "viewBox": [1390, 820],
+    "views": [
+      { "id": "execution", "label": "Execution path", "focus": ["entrypoint", "features", "splits", "preprocessing", "runner", "evaluation", "outputs"], "note": "Follow the CLI from raw market data through shared preparation, execution, evaluation, and saved evidence." },
+      { "id": "rankers", "label": "Ranker branches", "focus": ["runner", "lmart", "lrank", "model_helpers"], "note": "The orchestrator selects either LightGBM LambdaMART or the neural helper-backed LambdaRank path." },
+      { "id": "evidence", "label": "Evidence path", "focus": ["evaluation", "backtest", "outputs", "mlflow", "report"], "note": "Ranking metrics and the fixed-horizon backtest converge into auditable artifacts, MLflow, and HTML." }
+    ]
+  },
+  "components": [
+    { "id": "entrypoint", "type": "backend", "label": "recreate_first_trials.py", "sublabel": "main() · prepare()", "tag": "CLI orchestrator", "pos": [40, 300], "size": [210, 76], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 101, "label": "prepare + main" }] },
+    { "id": "features", "type": "backend", "label": "helpers/features.py", "sublabel": "load_frame() · engineer_features()", "tag": "market frame + signals", "pos": [320, 80], "size": [220, 76], "sources": [{ "path": "first phase_LMART_LRank/src/first_phase/helpers/features.py", "line": 53, "label": "load and engineer" }] },
+    { "id": "splits", "type": "backend", "label": "helpers/splits.py", "sublabel": "chronological_split()", "tag": "purged 70 / 15 / 15", "pos": [320, 260], "size": [220, 76], "sources": [{ "path": "first phase_LMART_LRank/src/first_phase/helpers/splits.py", "line": 6, "label": "purged split" }] },
+    { "id": "preprocessing", "type": "backend", "label": "helpers/preprocessing.py", "sublabel": "cross_sectional_zscore()", "tag": "per signal date", "pos": [320, 440], "size": [220, 76], "sources": [{ "path": "first phase_LMART_LRank/src/first_phase/helpers/preprocessing.py", "line": 14, "label": "z-score" }] },
+    { "id": "runner", "type": "backend", "label": "run_model()", "sublabel": "select training branch", "tag": "shared run contract", "pos": [630, 300], "size": [190, 76], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 298, "label": "model dispatcher" }] },
+    { "id": "lmart", "type": "backend", "label": "LambdaMART branch", "sublabel": "lmart_matrix() · train_lmart()", "tag": "LightGBM", "pos": [900, 120], "size": [220, 76], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 240, "label": "tree ranker" }] },
+    { "id": "lrank", "type": "backend", "label": "LambdaRank branch", "sublabel": "train_lrank() · fit_ranker()", "tag": "PyTorch", "pos": [900, 300], "size": [220, 76], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 197, "label": "neural entry" }, { "path": "first phase_LMART_LRank/src/first_phase/helpers/model.py", "line": 491, "label": "ranker API" }] },
+    { "id": "model_helpers", "type": "backend", "label": "helpers/model.py", "sublabel": "TorchRanker · _two_tail_loss()", "tag": "network + objective", "pos": [900, 480], "size": [220, 76], "sources": [{ "path": "first phase_LMART_LRank/src/first_phase/helpers/model.py", "line": 122, "label": "network" }, { "path": "first phase_LMART_LRank/src/first_phase/helpers/model.py", "line": 205, "label": "loss" }] },
+    { "id": "evaluation", "type": "backend", "label": "helpers/metrics.py", "sublabel": "evaluate_rankings()", "tag": "NDCG · pairwise · correlation", "pos": [1140, 150], "size": [230, 76], "sources": [{ "path": "first phase_LMART_LRank/src/first_phase/helpers/metrics.py", "line": 225, "label": "ranking metrics" }] },
+    { "id": "backtest", "type": "backend", "label": "fixed_horizon_backtest()", "sublabel": "non-overlapping 3-bar cohorts", "tag": "long 2 / short 2", "pos": [1140, 330], "size": [230, 76], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 129, "label": "portfolio simulation" }] },
+    { "id": "outputs", "type": "database", "label": "runs/phase1/{lmart,lrank}", "sublabel": "JSON · CSV · model files", "tag": "auditable run artifacts", "pos": [1140, 510], "size": [230, 76], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 298, "label": "artifact writer" }] },
+    { "id": "mlflow", "type": "database", "label": "MLflow tracking", "sublabel": "log_run() · isolated SQLite", "tag": "metrics + provenance", "pos": [860, 680], "size": [220, 70], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 339, "label": "run logger" }] },
+    { "id": "report", "type": "frontend", "label": "first_trials_report.html", "sublabel": "write_report()", "tag": "portable comparison", "pos": [1140, 680], "size": [230, 70], "sources": [{ "path": "first phase_LMART_LRank/recreate_first_trials.py", "line": 382, "label": "HTML report" }] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Shared Phase 1 preparation", "wraps": ["features", "splits", "preprocessing"], "pad": 18 },
+    { "kind": "region", "label": "Model implementations", "wraps": ["lmart", "lrank", "model_helpers"], "pad": 18 },
+    { "kind": "region", "label": "Evaluation and evidence", "wraps": ["evaluation", "backtest", "outputs", "mlflow", "report"], "pad": 18 }
+  ],
+  "connections": [
+    { "id": "load", "from": "entrypoint", "to": "features", "label": "load + engineer", "variant": "emphasis" },
+    { "id": "split", "from": "features", "to": "splits", "label": "complete dates", "labelAt": [430, 170] },
+    { "id": "standardize", "from": "splits", "to": "preprocessing", "label": "train / validation / test", "labelAt": [430, 350] },
+    { "id": "prepared", "from": "preprocessing", "to": "runner", "label": "z-scored frames", "variant": "emphasis" },
+    { "id": "tree_branch", "from": "runner", "to": "lmart", "label": "method = lmart", "variant": "emphasis" },
+    { "id": "neural_branch", "from": "runner", "to": "lrank", "label": "method = lrank", "variant": "emphasis", "labelAt": [860, 360] },
+    { "id": "neural_helpers", "from": "lrank", "to": "model_helpers", "label": "build + optimize", "labelAt": [1010, 390] },
+    { "id": "tree_scores", "from": "lmart", "to": "evaluation", "label": "split scores", "labelAt": [1130, 106] },
+    { "id": "neural_scores", "from": "lrank", "to": "evaluation", "label": "split scores" },
+    { "id": "ranking_to_backtest", "from": "evaluation", "to": "backtest", "label": "test ordering", "labelAt": [1255, 240] },
+    { "id": "save", "from": "backtest", "to": "outputs", "label": "equity + summary", "variant": "emphasis", "labelAt": [1255, 420] },
+    { "id": "track", "from": "outputs", "to": "mlflow", "label": "log artifacts", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "render", "from": "outputs", "to": "report", "label": "summaries + run IDs", "variant": "emphasis", "labelAt": [1325, 620] }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "One orchestrator", "items": ["main() freezes the contract and runs both model families", "prepare() owns the shared leakage-aware data path"] },
+    { "dot": "violet", "title": "Two distinct implementations", "items": ["LambdaMART is trained directly with LightGBM", "LambdaRank delegates its network and pairwise objective to helpers/model.py"] },
+    { "dot": "emerald", "title": "Shared evidence", "items": ["Both branches use the same metrics and fixed-horizon backtest", "Compact artifacts feed isolated MLflow tracking and the HTML comparison"] }
+  ]
+}
