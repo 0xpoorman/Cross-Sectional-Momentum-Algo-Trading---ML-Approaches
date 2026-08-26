@@ -5,12 +5,12 @@ LightGBM LambdaMART. The repository preserves the initial Phase 1 reproduction,
 its ranking and portfolio evidence, and the reporting brief used to tell the
 larger research story without hiding weak or conflicting results.
 
-[![Phase 1 codebase architecture](first%20phase_LMART_LRank/assets/phase1-codebase.visual-check.2048x1320.light.png)](first%20phase_LMART_LRank/assets/phase1-codebase.html)
+[![Phase 1 codebase architecture](first%20phase_LMART_LRank/assets/phase1-codebase-dark.svg)](first%20phase_LMART_LRank/assets/phase1-codebase.html)
 
 <p align="center">
-  <strong><a href="first%20phase_LMART_LRank/assets/phase1-codebase.html">Open the interactive codebase map</a></strong>
+  <strong><a href="first%20phase_LMART_LRank/assets/phase1-codebase-dark.svg">Open the full-size architecture map</a></strong>
   ·
-  <a href="first%20phase_LMART_LRank/assets/phase1-codebase.architecture.json">Archify source</a>
+  <a href="first%20phase_LMART_LRank/assets/phase1-codebase.html">Interactive Archify version</a>
 </p>
 
 ## How the Phase 1 code fits together
@@ -26,8 +26,7 @@ training paths:
 
 Both branches return to the same ranking metrics, fixed three-bar backtest,
 artifact writer, isolated MLflow tracker, and portable comparison report. Click
-the diagram above to explore those relationships, inspect source references,
-switch themes, and focus individual execution paths.
+the diagram above to inspect those relationships at full resolution.
 
 ## Start here
 

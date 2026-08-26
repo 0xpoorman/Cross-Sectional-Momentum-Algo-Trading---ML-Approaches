@@ -45,12 +45,13 @@ runs/phase1/
 
 The high-level comparison is the separate `first_trials_report.html` in this
 directory. It embeds only summary data and does not require MLflow to render.
-The repository-level Archify codebase map is in
-`assets/phase1-codebase.architecture.json` with the interactive artifact at
-`assets/phase1-codebase.html`. It shows how the entry point, helper modules, key
-functions, two training branches, evaluation, backtest, MLflow, and report
-outputs interact. The older experiment-flow diagram remains available as
-`assets/phase1-architecture.html`.
+The primary repository-level codebase map is the readable dark-purple SVG at
+`assets/phase1-codebase-dark.svg`. The Archify specification and interactive
+companion remain in `assets/phase1-codebase.architecture.json` and
+`assets/phase1-codebase.html`. Together they show how the entry point, helper
+modules, key functions, two training branches, evaluation, backtest, MLflow,
+and report outputs interact. The older experiment-flow diagram remains
+available as `assets/phase1-architecture.html`.
 
 To regenerate the diagram after editing the JSON (Archify is installed by the
 skill installer into the local Codex skills directory):

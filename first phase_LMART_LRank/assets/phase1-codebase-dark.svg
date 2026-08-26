@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Phase 1 Learning-to-Rank codebase architecture</title>
+  <desc id="desc">Dark purple architecture diagram showing the Python entry point, shared data helpers, separate LambdaMART and LambdaRank branches, shared evaluation, artifacts, MLflow, and HTML reporting.</desc>
+  <defs>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#343247" stroke-width="1" opacity=".48"/>
+    </pattern>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#391d4f"/><stop offset="1" stop-color="#5d214c"/>
+    </linearGradient>
+    <linearGradient id="tree" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#54204e"/><stop offset="1" stop-color="#762b58"/>
+    </linearGradient>
+    <linearGradient id="neural" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#292055"/><stop offset="1" stop-color="#472c73"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#07060d" flood-opacity=".5"/>
+    </filter>
+    <marker id="pinkArrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M1 1l10 5-10 5z" fill="#ee4b9b"/></marker>
+    <marker id="blueArrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M1 1l10 5-10 5z" fill="#8a78ff"/></marker>
+    <style>
+      .title{font:700 34px Inter,ui-sans-serif,system-ui,sans-serif;fill:#fff}.subtitle{font:400 17px Inter,ui-sans-serif,system-ui,sans-serif;fill:#aaa7ba}
+      .zone{fill:#201f2a;stroke:#595668;stroke-width:2;stroke-dasharray:8 8}.zoneTitle{font:700 24px Inter,ui-sans-serif,system-ui,sans-serif;fill:#fff}
+      .node{fill:#171621;stroke:#454254;stroke-width:1.5}.nodeHi{fill:url(#hero);stroke:#a43b79;stroke-width:2}.tree{fill:url(#tree);stroke:#cb3f84;stroke-width:2}.neural{fill:url(#neural);stroke:#7965dd;stroke-width:2}
+      .h{font:700 19px Inter,ui-sans-serif,system-ui,sans-serif;fill:#fff}.s{font:400 14px Inter,ui-sans-serif,system-ui,sans-serif;fill:#c2becf}.code{font:500 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#ddd8e8}
+      .tag{font:700 12px Inter,ui-sans-serif,system-ui,sans-serif;fill:#f7c1dc;letter-spacing:.08em}.tagBlue{font:700 12px Inter,ui-sans-serif,system-ui,sans-serif;fill:#c7bfff;letter-spacing:.08em}
+      .pink{fill:none;stroke:#ee4b9b;stroke-width:4;marker-end:url(#pinkArrow)}.blue{fill:none;stroke:#8a78ff;stroke-width:4;marker-end:url(#blueArrow)}.shared{fill:none;stroke:#b9b5c8;stroke-width:3;marker-end:url(#blueArrow)}
+      .edge{font:600 13px Inter,ui-sans-serif,system-ui,sans-serif;fill:#e6e2ee}.pill{fill:#1c1b26;stroke:#444151;stroke-width:1}
+    </style>
+  </defs>
+  <rect width="1600" height="1040" fill="#1b1a24"/><rect width="1600" height="1040" fill="url(#grid)"/>
+  <text class="title" x="64" y="60">Phase 1 Learning-to-Rank — Codebase Architecture</text>
+  <text class="subtitle" x="64" y="91">One shared preparation pipeline · two distinct ranker implementations · one evidence path</text>
+
+  <!-- Orchestration -->
+  <rect class="zone" x="55" y="130" width="300" height="775" rx="24"/>
+  <rect class="pill" x="80" y="112" width="230" height="52" rx="14"/><text class="zoneTitle" x="102" y="146">Orchestration</text>
+  <rect class="nodeHi" x="85" y="225" width="240" height="170" rx="18" filter="url(#shadow)"/>
+  <text class="tag" x="108" y="259">ENTRY POINT</text><text class="h" x="108" y="295">recreate_first_trials.py</text>
+  <text class="code" x="108" y="331">main()</text><text class="code" x="108" y="358">prepare()</text>
+  <text class="s" x="108" y="382">Freezes the Phase 1 contract</text>
+  <rect class="node" x="85" y="545" width="240" height="150" rx="18"/>
+  <text class="tagBlue" x="108" y="579">DISPATCH</text><text class="h" x="108" y="615">run_model()</text>
+  <text class="s" x="108" y="645">Runs both methods under</text><text class="s" x="108" y="667">the same data contract</text>
+  <path class="pink" d="M205 397V535"/><text class="edge" x="220" y="472">prepared splits</text>
+
+  <!-- Shared pipeline -->
+  <rect class="zone" x="405" y="130" width="360" height="775" rx="24"/>
+  <rect class="pill" x="445" y="112" width="280" height="52" rx="14"/><text class="zoneTitle" x="468" y="146">Shared Data Pipeline</text>
+  <rect class="node" x="445" y="210" width="280" height="130" rx="16"/>
+  <text class="tag" x="470" y="242">FEATURES.PY</text><text class="h" x="470" y="276">Load + engineer signals</text>
+  <text class="code" x="470" y="307">load_frame()</text><text class="code" x="590" y="307">engineer_features()</text>
+  <rect class="node" x="445" y="420" width="280" height="130" rx="16"/>
+  <text class="tag" x="470" y="452">SPLITS.PY</text><text class="h" x="470" y="486">Purged chronological split</text>
+  <text class="code" x="470" y="517">chronological_split()</text>
+  <rect class="node" x="445" y="630" width="280" height="130" rx="16"/>
+  <text class="tag" x="470" y="662">PREPROCESSING.PY</text><text class="h" x="470" y="696">Normalize each date</text>
+  <text class="code" x="470" y="727">cross_sectional_zscore()</text>
+  <path class="pink" d="M585 342V410"/><path class="pink" d="M585 552V620"/>
+  <text class="edge" x="600" y="381">complete dates</text><text class="edge" x="600" y="591">train · validation · test</text>
+  <path class="pink" d="M325 310H390V275H435"/>
+  <path class="pink" d="M435 695H385V620H335"/>
+
+  <!-- Model branches -->
+  <rect class="zone" x="815" y="130" width="350" height="775" rx="24"/>
+  <rect class="pill" x="860" y="112" width="260" height="52" rx="14"/><text class="zoneTitle" x="884" y="146">Model Engine</text>
+  <rect class="tree" x="855" y="210" width="270" height="220" rx="18" filter="url(#shadow)"/>
+  <text class="tag" x="880" y="245">TREE BRANCH</text><text class="h" x="880" y="282">LambdaMART</text>
+  <text class="s" x="880" y="313">Direct LightGBM training</text><text class="code" x="880" y="348">lmart_matrix()</text><text class="code" x="880" y="377">train_lmart()</text>
+  <text class="s" x="880" y="406">Grouped relevance labels</text>
+  <rect class="neural" x="855" y="520" width="270" height="250" rx="18" filter="url(#shadow)"/>
+  <text class="tagBlue" x="880" y="555">NEURAL BRANCH</text><text class="h" x="880" y="592">LambdaRank</text>
+  <text class="s" x="880" y="623">PyTorch ranker + pairwise loss</text><text class="code" x="880" y="658">train_lrank()</text><text class="code" x="880" y="687">fit_ranker()</text>
+  <rect class="pill" x="880" y="710" width="220" height="40" rx="10"/><text class="code" x="898" y="736">helpers/model.py</text>
+  <path class="pink" d="M175 695V800H790V320H845"/><text class="edge" x="535" y="788">dispatch: LambdaMART</text>
+  <path class="blue" d="M235 695V835H810V645H845"/><text class="edge" x="535" y="858">dispatch: LambdaRank</text>
+
+  <!-- Evidence -->
+  <rect class="zone" x="1215" y="130" width="330" height="775" rx="24"/>
+  <rect class="pill" x="1265" y="112" width="230" height="52" rx="14"/><text class="zoneTitle" x="1288" y="146">Evidence Layer</text>
+  <rect class="node" x="1250" y="205" width="260" height="125" rx="16"/>
+  <text class="tagBlue" x="1275" y="237">METRICS.PY</text><text class="h" x="1275" y="271">Ranking diagnostics</text><text class="code" x="1275" y="302">evaluate_rankings()</text>
+  <rect class="node" x="1250" y="390" width="260" height="125" rx="16"/>
+  <text class="tagBlue" x="1275" y="422">BACKTEST</text><text class="h" x="1275" y="456">Fixed 3-bar cohorts</text><text class="code" x="1275" y="487">fixed_horizon_backtest()</text>
+  <rect class="nodeHi" x="1250" y="575" width="260" height="115" rx="16"/>
+  <text class="tag" x="1275" y="607">AUDITABLE OUTPUTS</text><text class="h" x="1275" y="641">runs/phase1/</text><text class="s" x="1275" y="669">JSON · CSV · model files</text>
+  <rect class="node" x="1250" y="750" width="120" height="110" rx="16"/><text class="h" x="1272" y="790">MLflow</text><text class="s" x="1272" y="820">metrics +</text><text class="s" x="1272" y="841">provenance</text>
+  <rect class="node" x="1390" y="750" width="120" height="110" rx="16"/><text class="h" x="1412" y="790">Report</text><text class="s" x="1412" y="820">portable</text><text class="s" x="1412" y="841">HTML</text>
+  <path class="shared" d="M1125 320H1240"/><path class="shared" d="M1125 645H1190V268H1240"/><text class="edge" x="1145" y="246">split scores</text>
+  <path class="blue" d="M1380 332V380"/><path class="pink" d="M1380 517V565"/>
+  <path class="blue" d="M1330 692V740"/><path class="pink" d="M1448 692V740"/>
+
+  <rect x="55" y="942" width="1490" height="58" rx="14" fill="#14131d" stroke="#454254"/>
+  <circle cx="88" cy="971" r="7" fill="#ee4b9b"/><text class="s" x="106" y="977">Shared preparation</text>
+  <circle cx="308" cy="971" r="7" fill="#cb3f84"/><text class="s" x="326" y="977">LightGBM path</text>
+  <circle cx="510" cy="971" r="7" fill="#8a78ff"/><text class="s" x="528" y="977">PyTorch path</text>
+  <text class="s" x="748" y="977">Both models rejoin the same evaluation and evidence pipeline.</text>
+</svg>
