@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Phase 1 LambdaMART + LambdaRank Reproduction",
+    "output": "phase1-architecture.html",
+    "viewBox": [1080, 620],
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "main-flow", "label": "Main flow", "focus": ["bars", "prep", "rankers", "evaluation", "evidence"], "note": "Follow the frozen Phase 1 path from bars to evidence." }
+    ]
+  },
+  "stages": [
+    { "label": "Market input" },
+    { "label": "Causal preparation" },
+    { "label": "Phase 1 rankers" },
+    { "label": "Evaluation" },
+    { "label": "Evidence output" }
+  ],
+  "nodes": [
+    { "id": "bars", "type": "external", "label": "SPDR bars", "sublabel": "OHLCV · 11 assets", "stage": 0, "row": 0, "tag": "raw input", "width": 150 },
+    { "id": "prep", "type": "backend", "label": "Prepare rows", "sublabel": "10 features · z-score", "stage": 1, "row": 0, "tag": "3-bar labels", "width": 150 },
+    { "id": "rankers", "type": "backend", "label": "Two rankers", "sublabel": "MART + ReLU Rank", "stage": 2, "row": 0, "tag": "full groups", "width": 150 },
+    { "id": "evaluation", "type": "backend", "label": "Evaluate", "sublabel": "NDCG · accuracy · P&L", "stage": 3, "row": 0, "tag": "fixed horizon", "width": 150 },
+    { "id": "evidence", "type": "database", "label": "Evidence", "sublabel": "MLflow · HTML · CSV", "stage": 4, "row": 0, "tag": "offline audit", "width": 150 }
+  ],
+  "flows": [
+    { "from": "bars", "to": "prep", "label": "causal rows", "classification": "features + labels", "variant": "emphasis", "route": "straight", "labelDy": 55 },
+    { "from": "prep", "to": "rankers", "label": "grouped X", "classification": "date groups", "variant": "emphasis", "route": "straight", "labelDy": 55 },
+    { "from": "rankers", "to": "evaluation", "label": "scores", "classification": "top/bottom tails", "variant": "emphasis", "route": "straight", "labelDy": 55 },
+    { "from": "evaluation", "to": "evidence", "label": "metrics + P&L", "classification": "audit artifacts", "variant": "emphasis", "route": "straight", "labelDy": 55 }
+  ],
+  "cards": [
+    { "dot": "amber", "title": "Frozen assumptions", "items": ["ReLU neural path; no leaky slope", "Three-bar holding period", "No take-profit, stop-loss, or LightGBM truncation"] },
+    { "dot": "violet", "title": "Expected Phase 1 result", "items": ["NDCG can reach roughly 0.39–0.41 while pairwise accuracy stays near chance", "Training loss can decline without test ranking improvement", "This is a baseline reproduction, not a selected winner"] },
+    { "dot": "emerald", "title": "Reproducibility boundary", "items": ["Separate MLflow SQLite store", "Separate run directories and HTML", "Copied helper modules freeze the historical path"] }
+  ]
+}

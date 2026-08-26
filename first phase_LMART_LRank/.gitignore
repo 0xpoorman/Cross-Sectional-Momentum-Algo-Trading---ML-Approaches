@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.py[cod]
+runs/phase1/mlartifacts/
+runs/phase1/mlflow.db*
+runs/phase1/lmart/model.txt
+runs/phase1/lrank/model.pt
+*.db
+*.db-*

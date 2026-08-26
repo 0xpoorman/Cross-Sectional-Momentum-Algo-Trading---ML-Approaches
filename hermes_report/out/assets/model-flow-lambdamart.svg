@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" role="img" aria-labelledby="t-lm d-lm" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <title id="t-lm">LambdaMART / tree-ranker flow: daily cross-section, signals, cross-sectional z-score, integer relevance grades, leaf-wise boosted LightGBM trees with selected knobs, additive ranking score, top-two selection rule (equal-notional, long-only), and a separate exit-policy box.</title>
+  <desc id="d-lm">Editorial pipeline diagram. Eleven sector ETFs per day feed ten features (MACD muted), are z-scored within the date, mapped to smooth percentile relevance grades 0-10, ranked by shallow depth-2 LightGBM boosted trees (31 leaves requested but only 3 effective due to the depth cap; minimum 60 child samples; truncation 10; no MACD). The additive score orders each date's cross-section; the trading rule takes the top two, equal-notional long-only. A separate box shows exits: fixed 6% take-profit / 5% stop-loss baseline, with the ATR trailing-stop Strategy 2 labeled as a later post-selection diagnostic.</desc>
+  <style>
+    .blk{fill:var(--blk,#f4f1ea);stroke:#8a8375;stroke-width:1.2;rx:10}
+    .acc{fill:var(--acc,#e7efe4);stroke:#4c7a4c;stroke-width:1.4}
+    .mut{opacity:.42}
+    .h{font-size:15px;font-weight:700;fill:var(--ink,#26231d)}
+    .s{font-size:12px;fill:var(--ink,#26231d)}
+    .k{font-size:11.5px;fill:var(--sub,#5c564a)}
+    .ar{stroke:#8a8375;stroke-width:1.6;marker-end:url(#ah);fill:none}
+    .chip{font-size:10.5px}
+  </style>
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#8a8375"/></marker></defs>
+  <rect x="0" y="0" width="1180" height="620" fill="none"/>
+
+  <!-- 1 Daily cross-section -->
+  <g transform="translate(16,40)">
+    <rect class="blk" width="170" height="150"/>
+    <text fill="currentColor" class="h" x="12" y="24">Daily cross-section</text>
+    <text fill="currentColor" class="s" x="12" y="44">11 sector ETFs</text>
+    <text fill="currentColor" class="s" x="12" y="60">at one timestamp</text>
+    <g stroke="#8a8375" fill="none">
+      <circle cx="30" cy="100" r="11"/><circle cx="58" cy="88" r="11"/><circle cx="86" cy="104" r="11"/><circle cx="114" cy="90" r="11"/><circle cx="142" cy="102" r="11"/><circle cx="44" cy="122" r="11"/><circle cx="72" cy="126" r="11"/><circle cx="100" cy="124" r="11"/><circle cx="128" cy="120" r="11"/><circle cx="86" cy="76" r="11"/>
+    </g>
+  </g>
+  <path class="ar" d="M190,115 H222"/>
+
+  <!-- 2 Signals -->
+  <g transform="translate(226,40)">
+    <rect class="blk" width="160" height="150"/>
+    <text fill="currentColor" class="h" x="12" y="24">Available signals</text>
+    <text fill="currentColor" class="s" x="12" y="46">ret_1 ret_5 ret_20</text>
+    <text fill="currentColor" class="s" x="12" y="63">volatility_20 range_1</text>
+    <text fill="currentColor" class="s" x="12" y="80">atr_14 close_location</text>
+    <text fill="currentColor" class="s" x="12" y="97">volume_z_20 volume_change_1</text>
+    <text fill="currentColor" class="s" x="12" y="114">vwap_dev_20</text>
+    <rect x="10" y="124" width="140" height="18" rx="9" class="mut" fill="#b3aca0"/>
+    <text fill="currentColor" class="s mut" x="18" y="137">MACD — excluded by selection</text>
+  </g>
+  <path class="ar" d="M390,115 H422"/>
+
+  <!-- 3 z-score -->
+  <g transform="translate(426,40)">
+    <rect class="blk" width="130" height="150"/>
+    <text fill="currentColor" class="h" x="12" y="24">Cross-sectional</text>
+    <text fill="currentColor" class="h" x="12" y="41">standardization</text>
+    <text fill="currentColor" class="s" x="12" y="66">z-score within the</text>
+    <text fill="currentColor" class="s" x="12" y="82">timestamp</text>
+    <text fill="currentColor" class="k" x="12" y="106">ddof = 0</text>
+    <text fill="currentColor" class="k" x="12" y="121">per feature, per date</text>
+  </g>
+  <path class="ar" d="M560,115 H592"/>
+
+  <!-- 4 Relevance -->
+  <g transform="translate(596,40)">
+    <rect class="blk" width="150" height="150"/>
+    <text fill="currentColor" class="h" x="12" y="24">Integer relevance</text>
+    <text fill="currentColor" class="s" x="12" y="46">smooth percentile</text>
+    <text fill="currentColor" class="s" x="12" y="62">grades 0–10</text>
+    <g transform="translate(12,80)">
+      <rect width="126" height="12" rx="3" fill="#ddd8cc"/>
+      <rect width="38" height="12" rx="3" fill="#4c7a4c"/>
+      <rect x="102" width="24" height="12" rx="3" fill="#a05252"/>
+    </g>
+    <text fill="currentColor" class="k" x="12" y="112">elite tail weighted (gain 15)</text>
+    <text fill="currentColor" class="k" x="12" y="128">long-only actionable tail</text>
+    <text fill="currentColor" class="k" x="12" y="142" font-weight="700">highlighted green →</text>
+  </g>
+  <path class="ar" d="M750,115 H782"/>
+
+  <!-- 5 Trees + knobs -->
+  <g transform="translate(786,28)">
+    <rect class="acc" width="200" height="176" rx="10"/>
+    <text fill="currentColor" class="h" x="12" y="24">Leaf-wise boosted trees</text>
+    <!-- tree 1 -->
+    <g transform="translate(14,44)">
+      <circle cx="26" cy="10" r="9" fill="#fff" stroke="#4c7a4c"/><circle cx="12" cy="34" r="8" fill="#fff" stroke="#4c7a4c"/><circle cx="40" cy="34" r="8" fill="#4c7a4c" stroke="#4c7a4c"/>
+      <line x1="26" y1="19" x2="13" y2="27" stroke="#4c7a4c"/><line x1="26" y1="19" x2="39" y2="27" stroke="#4c7a4c"/>
+      <text fill="currentColor" class="k" x="56" y="16">tree 1</text>
+    </g>
+    <!-- tree 2 -->
+    <g transform="translate(14,84)">
+      <circle cx="26" cy="10" r="9" fill="#fff" stroke="#4c7a4c"/><circle cx="12" cy="34" r="8" fill="#4c7a4c" stroke="#4c7a4c"/><circle cx="40" cy="34" r="8" fill="#fff" stroke="#4c7a4c"/>
+      <line x1="26" y1="19" x2="13" y2="27" stroke="#4c7a4c"/><line x1="26" y1="19" x2="39" y2="27" stroke="#4c7a4c"/>
+      <text fill="currentColor" class="k" x="56" y="16">tree 2 corrects tree 1</text>
+    </g>
+    <!-- expandable leaf -->
+    <g transform="translate(14,124)">
+      <circle cx="26" cy="10" r="9" fill="none" stroke="#a05252" stroke-dasharray="3 2" stroke-width="1.6"/>
+      <text fill="currentColor" class="k" x="42" y="14">expandable leaf</text>
+    </g>
+    <text fill="currentColor" class="k" x="12" y="164">(three of many shown)</text>
+  </g>
+
+  <!-- knob chips under trees -->
+  <g transform="translate(786,216)">
+    <rect width="380" height="96" rx="8" class="blk"/>
+    <text fill="currentColor" class="h" x="12" y="20" font-size="13">Selected knobs (trial 159, TreeRank study)</text>
+    <g class="chip" fill="var(--sub,#5c564a)">
+      <text fill="currentColor" x="12" y="38">LightGBM · depth 2 · min child samples 60</text>
+      <text fill="currentColor" x="12" y="53">requested num_leaves 31 → effective 3 (depth cap)</text>
+      <text fill="currentColor" x="12" y="68">lr ≈ 0.0562 · feat/bag fraction 1.0 · max bin 31</text>
+      <text fill="currentColor" x="12" y="83">L1 ≈ 4.874 · L2 ≈ 0.000286 · LambdaRank truncation 10 · no MACD</text>
+    </g>
+    <rect x="238" y="40" width="132" height="17" rx="8" fill="none" stroke="#a05252" stroke-width="1.2"/>
+  </g>
+  <path class="ar" d="M986,116 C1010,116 1000,180 1016,212"/>
+
+  <!-- score -->
+  <g transform="translate(786,340)">
+    <rect class="blk" width="200" height="70"/>
+    <text fill="currentColor" class="h" x="12" y="26">Additive ranking score</text>
+    <text fill="currentColor" class="s" x="12" y="47">one scalar score per ETF,</text>
+    <text fill="currentColor" class="s" x="12" y="62">sum of tree outputs</text>
+  </g>
+
+  <!-- rank-to-position action -->
+  <g transform="translate(786,430)">
+    <rect class="acc" width="200" height="74"/>
+    <text fill="currentColor" class="h" x="12" y="26">Rank-to-position action</text>
+    <text fill="currentColor" class="s" x="12" y="47">rank within date;</text>
+    <text fill="currentColor" class="s" x="12" y="62">top-two selection rule (equal-notional, long-only)</text>
+  </g>
+  <path class="ar" d="M886,410 V426"/>
+
+  <!-- SPY note -->
+  <g transform="translate(786,520)">
+    <rect class="blk" width="200" height="52" stroke-dasharray="4 3"/>
+    <text fill="currentColor" class="s" x="12" y="21">Benchmark context:</text>
+    <text fill="currentColor" class="k" x="12" y="38">SPY Sharpe 0.825 over same test window</text>
+  </g>
+
+  <!-- exit policy box -->
+  <g transform="translate(300,436)">
+    <rect width="420" height="120" rx="10" fill="var(--warn,#fdf6ec)" stroke="#b98a3a" stroke-width="1.4" stroke-dasharray="6 3"/>
+    <text class="h" x="16" y="26" fill="#7a5a1e">Separate exit policy — not part of model training</text>
+    <text fill="currentColor" class="s" x="16" y="48">Baseline: fixed 6% take-profit / 5% stop-loss</text>
+    <text fill="currentColor" class="s" x="16" y="67">Strategy 2: ATR trailing stops, wider short trail,</text>
+    <text fill="currentColor" class="s" x="16" y="83">long multiplier — later diagnostic</text>
+    <rect x="16" y="92" width="270" height="18" rx="9" fill="#b98a3a" opacity=".16"/>
+    <text class="chip" x="24" y="105" fill="#7a5a1e" font-weight="700">POST-SELECTION DIAGNOSTIC — not model-selection evidence</text>
+  </g>
+  <path class="ar" d="M886,504 V556 H724" stroke-dasharray="5 3"/>
+
+  <!-- caption -->
+  <text fill="currentColor" class="k" x="16" y="600">Requested vs realized complexity: the depth-2 cap limits any tree to 3 effective leaves regardless of the requested 31 — the search rewarded this simplicity.</text>
+</svg>

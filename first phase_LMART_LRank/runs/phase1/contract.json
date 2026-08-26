@@ -1,0 +1,35 @@
+{
+  "contract": {
+    "dataset": "/Users/grokking/Documents/Learning2Rank/database/datasets/spdr_sectors_2018_2025.csv",
+    "horizon": 3,
+    "train_fraction": 0.7,
+    "validation_fraction": 0.15,
+    "min_symbols": 11,
+    "top_n": 2,
+    "bottom_n": 2,
+    "seed": 7,
+    "strategy": "fixed_horizon",
+    "walk_forward_optimization": false,
+    "stop_loss": null,
+    "take_profit": null,
+    "transaction_cost_bps": 0.0
+  },
+  "features": [
+    "ret_1",
+    "ret_5",
+    "ret_20",
+    "volatility_20",
+    "range_1",
+    "atr_14",
+    "close_location",
+    "volume_z_20",
+    "volume_change_1",
+    "vwap_dev_20"
+  ],
+  "split": {
+    "train_dates": 1070,
+    "validation_dates": 226,
+    "test_dates": 231
+  },
+  "dataset_sha256": "270228fbe12db64c20a571c40edd61d9441cf6d2dcede2b6a7f3fc11c3a470df"
+}

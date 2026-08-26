@@ -1,0 +1,135 @@
+{
+ "S1": {
+  "path": "artifacts/optuna/LRank_sectors_both_broad_smooth_1/optuna_selection.json",
+  "fields": [
+   "stable_trial",
+   "stable_objective",
+   "best_single_trial",
+   "best_single_objective",
+   "selected_cluster"
+  ],
+  "metric_def": "Walk-forward Sharpe objective = fold mean - 0.25 x fold dispersion; 4 purged expanding folds x seeds {7,17}"
+ },
+ "S2": {
+  "path": "artifacts/optuna/LMart_sectors_both_architecture_1/optuna_selection.json",
+  "fields": [
+   "stable_trial=194",
+   "best_single_trial=132",
+   "cluster mean_sharpe"
+  ],
+  "metric_def": "Same stability objective; LightGBM-only LambdaMART study"
+ },
+ "S3": {
+  "path": "artifacts/optuna/TreeRank_sectors_both_architecture_1/optuna_selection.json",
+  "fields": [
+   "stable_trial=159 (also best single)",
+   "backend split"
+  ],
+  "metric_def": "Same stability objective; LightGBM/XGBoost backend knob"
+ },
+ "S4": {
+  "path": "artifacts/optuna/*/study_manifest.json",
+  "fields": [
+   "trials_total",
+   "folds",
+   "seeds",
+   "stability_penalty",
+   "test_rows_used=0"
+  ],
+  "metric_def": "Study contract; test_rows_used=0 confirms untouched-test separation"
+ },
+ "S5": {
+  "path": "artifacts/optuna/*/optuna_trials_clean.csv + optuna_fold_scores.csv",
+  "fields": [
+   "objective",
+   "mean_sharpe",
+   "fold_std",
+   "tail_mode",
+   "use_macd",
+   "tree_backend"
+  ],
+  "metric_def": "One row per COMPLETE trial; fold rows per trial-fold-seed. Pruned trials excluded from clean exports (33/151/113)."
+ },
+ "S6": {
+  "path": "artifacts/optuna/*/optuna_parameter_importance.csv",
+  "fields": [
+   "parameter",
+   "importance"
+  ],
+  "metric_def": "Optuna study-level fANOVA-style importance, not SHAP, not causal attribution"
+ },
+ "S7": {
+  "path": "artifacts/lambdamart/LMart_sectors_1/backtest_summary.json + backtest_equity.csv",
+  "fields": [
+   "strategy_total_return=-0.00551",
+   "spy_total_return=0.16477",
+   "long/short closed expected return"
+  ],
+  "metric_def": "Closed-lot realized P&L only; terminal open lots excluded. Window 2024-11-11 to 2025-12-30."
+ },
+ "S8": {
+  "path": "artifacts/lambdarank/LRank_sectors_1/backtest_summary.json + equity_curve.csv",
+  "fields": [
+   "strategy_total_return=-0.04107"
+  ],
+  "metric_def": "Same closed-lot basis as S7"
+ },
+ "S9": {
+  "path": "artifacts/lambdamart/LMart_sectors_7/backtest_summary.json + strategy_trade_summary*.csv + trade_speed_calculations.csv",
+  "fields": [
+   "realized_sharpe=0.192",
+   "long_closed=+0.01579",
+   "short_closed=-0.01614",
+   "stop counts by asset/side"
+  ],
+  "metric_def": "Two-tail packaged run on 2025 test window"
+ },
+ "S10": {
+  "path": "artifacts/lambdarank/LRank_sectors_14/{backtest_summary.json,ranking_metrics.json,equity_curve.csv,closed_lots.csv}",
+  "fields": [
+   "realized_sharpe=1.072",
+   "total_return=0.04046",
+   "long_ndcg@2=0.5111",
+   "spy_sharpe=0.825"
+  ],
+  "metric_def": "Long-only packaged run on identical 2025 test window (entries 2025-01-27 to 2025-12-11)"
+ },
+ "S11": {
+  "path": "MLflow artifacts/mlflow.db (runs/params/latest_metrics)",
+  "fields": [
+   "23 FINISHED runs in Learning2Rank_sectors",
+   "data_fingerprint=8ca13be0...d6c09 for all joined runs"
+  ],
+  "metric_def": "Run registry and chronology; LRank_sectors_1 logged three times (dedup by UUID)"
+ },
+ "S12": {
+  "path": "artifacts/lambdarank/LRank_sectors_{10,13}/feature_importance.csv + lambdamart/LMart_sectors_{1..7}/feature_importance.csv",
+  "fields": [
+   "permutation importance / gain ranks by feature"
+  ],
+  "metric_def": "Ranks used because gain and permutation scales are incomparable across families"
+ },
+ "S13": {
+  "path": "database/datasets/spdr_sectors_2018_2025.csv + spdr_sectors_2018_2025_spy.csv",
+  "fields": [
+   "universe of 11 sector ETFs",
+   "SPY benchmark series kept separate"
+  ],
+  "metric_def": "Raw sources; SPY never inferred from universe"
+ },
+ "S14": {
+  "path": "DIRECTOR.md amendments + MLflow run start times + artifact mtimes",
+  "fields": [
+   "artifact dates 2026-08-22/23",
+   "trial accounting 500/203/297"
+  ],
+  "metric_def": "Timeline dates and trial counts derived from source artifacts at rebuild time"
+ },
+ "S15": {
+  "path": "lambdarank run_config.json (ridge_alpha field) + DIRECTOR.md",
+  "fields": [
+   "Ridge design: date-standardized target + global L2"
+  ],
+  "metric_def": "Ridge is a designed linear sanity-check baseline; NO completed Ridge artifact exists \u2014 designed but not yet evidenced"
+ }
+}

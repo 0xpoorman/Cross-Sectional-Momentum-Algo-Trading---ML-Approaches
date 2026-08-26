@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" role="img" aria-labelledby="t-nn d-nn" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <title id="t-nn">Neural LambdaRank flow: daily cross-section of 11 ETFs with ten features (MACD excluded), cross-sectional z-score, one 128-unit hidden layer with LeakyReLU slope ≈ 0.0604 and no normalization, dropout requested but inactive, linear scalar score per ETF, grouped within-date LambdaRank loss with NDCG weighting sigma 1.25, NAdam optimizer, top-two selection rule (equal-notional, long-only) and separate exit-policy box.</title>
+  <desc id="d-nn">Editorial information-flow diagram. Each day, 11 sector ETFs are described by ten features; MACD is muted as excluded. Features are z-scored within the date. A single hidden layer of 128 units (drawn as six circles) applies LeakyReLU with slope about 0.0604. No normalization layer exists — shown as a crossed-out chip. Dropout 0.05 was requested but is not instantiated in the effective graph because the builder only inserts dropout between hidden layers. The output is a linear scalar score with no sigmoid or softmax. Training uses a grouped LambdaRank loss over within-date pairs, NDCG-weighted with sigma 1.25, long-only tail. Optimizer NAdam, learning rate about 0.000717, weight decay about 1.02e-8, gradient clipping 0.1. The trading rule takes the top two, equal-notional long-only; exits are the fixed 6%/5% baseline with the ATR trailing Strategy 2 labeled post-selection.</desc>
+  <style>
+    .blk{fill:var(--blk,#f4f1ea);stroke:#8a8375;stroke-width:1.2}
+    .acc{fill:var(--acc,#e7efe4);stroke:#4c7a4c;stroke-width:1.4}
+    .h{font-size:15px;font-weight:700;fill:var(--ink,#26231d)}
+    .s{font-size:12px;fill:var(--ink,#26231d)}
+    .k{font-size:11.5px;fill:var(--sub,#5c564a)}
+    .ar{stroke:#8a8375;stroke-width:1.6;marker-end:url(#ah2);fill:none}
+    .chip{font-size:10.5px}
+    .cir{fill:#fff;stroke:#4c7a4c;stroke-width:1.4}
+  </style>
+  <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#8a8375"/></marker></defs>
+  <rect x="0" y="0" width="1180" height="620" fill="none"/>
+
+  <!-- 1 cross-section -->
+  <g transform="translate(16,40)">
+    <rect class="blk" width="170" height="150" rx="10"/>
+    <text fill="currentColor" class="h" x="12" y="24">Daily cross-section</text>
+    <text fill="currentColor" class="s" x="12" y="44">11 ETFs × selected</text>
+    <text fill="currentColor" class="s" x="12" y="60">features</text>
+    <g stroke="#8a8375" fill="none">
+      <circle cx="30" cy="100" r="11"/><circle cx="58" cy="88" r="11"/><circle cx="86" cy="104" r="11"/><circle cx="114" cy="90" r="11"/><circle cx="142" cy="102" r="11"/><circle cx="44" cy="122" r="11"/><circle cx="72" cy="126" r="11"/><circle cx="100" cy="124" r="11"/><circle cx="128" cy="120" r="11"/><circle cx="86" cy="76" r="11"/>
+    </g>
+  </g>
+  <path class="ar" d="M190,115 H222"/>
+
+  <!-- 2 signals -->
+  <g transform="translate(226,40)">
+    <rect class="blk" width="160" height="150" rx="10"/>
+    <text fill="currentColor" class="h" x="12" y="24">Selected signals (10)</text>
+    <text fill="currentColor" class="s" x="12" y="46">ret_1 ret_5 ret_20</text>
+    <text fill="currentColor" class="s" x="12" y="63">volatility_20 range_1</text>
+    <text fill="currentColor" class="s" x="12" y="80">atr_14 close_location</text>
+    <text fill="currentColor" class="s" x="12" y="97">volume_z_20 volume_change_1</text>
+    <text fill="currentColor" class="s" x="12" y="114">vwap_dev_20</text>
+    <rect x="10" y="124" width="140" height="18" rx="9" fill="#b3aca0" opacity=".42"/>
+    <text fill="currentColor" class="s mut" x="18" y="137" opacity=".42">MACD — muted/excluded</text>
+  </g>
+  <path class="ar" d="M390,115 H422"/>
+
+  <!-- 3 zscore -->
+  <g transform="translate(426,40)">
+    <rect class="blk" width="130" height="150" rx="10"/>
+    <text fill="currentColor" class="h" x="12" y="24">Cross-sectional</text>
+    <text fill="currentColor" class="h" x="12" y="41">z-score</text>
+    <text fill="currentColor" class="s" x="12" y="66">within each date,</text>
+    <text fill="currentColor" class="s" x="12" y="82">per feature</text>
+    <text fill="currentColor" class="k" x="12" y="110">same preprocessing as</text>
+    <text fill="currentColor" class="k" x="12" y="125">the tree ranker</text>
+  </g>
+  <path class="ar" d="M560,115 H592"/>
+
+  <!-- hidden layer network -->
+  <g transform="translate(596,28)">
+    <rect class="acc" width="230" height="180" rx="10"/>
+    <text fill="currentColor" class="h" x="12" y="24">One hidden layer · 128 units</text>
+    <!-- input column -->
+    <g class="cir">
+      <circle cx="34" cy="52" r="8"/><circle cx="34" cy="78" r="8"/><circle cx="34" cy="104" r="8"/><circle cx="34" cy="130" r="8"/>
+    </g>
+    <!-- hidden column -->
+    <g class="cir">
+      <circle cx="118" cy="48" r="9"/><circle cx="118" cy="74" r="9"/><circle cx="118" cy="100" r="9"/><circle cx="118" cy="126" r="9"/><circle cx="118" cy="152" r="9"/><circle cx="118" cy="178" r="9"/>
+    </g>
+    <!-- output -->
+    <circle cx="202" cy="104" r="9" fill="#4c7a4c"/>
+    <g stroke="#8aa08a" stroke-width=".7">
+      <line x1="42" y1="52" x2="109" y2="48"/><line x1="42" y1="52" x2="109" y2="74"/><line x1="42" y1="78" x2="109" y2="74"/><line x1="42" y1="78" x2="109" y2="100"/><line x1="42" y1="104" x2="109" y2="100"/><line x1="42" y1="104" x2="109" y2="126"/><line x1="42" y1="130" x2="109" y2="126"/><line x1="42" y1="130" x2="109" y2="152"/>
+      <line x1="127" y1="48" x2="193" y2="100"/><line x1="127" y1="74" x2="193" y2="102"/><line x1="127" y1="100" x2="193" y2="104"/><line x1="127" y1="126" x2="193" y2="106"/><line x1="127" y1="152" x2="193" y2="108"/>
+    </g>
+    <text fill="currentColor" class="k" x="98" y="196">(6 circles represent 128 units)</text>
+  </g>
+
+  <!-- activation / normalization / dropout chips -->
+  <g transform="translate(836,28)">
+    <rect class="blk" width="150" height="60" rx="8"/>
+    <text fill="currentColor" class="s" x="10" y="22">LeakyReLU</text>
+    <text fill="currentColor" class="k" x="10" y="39">slope ≈ 0.0604</text>
+    <text fill="currentColor" class="k" x="10" y="53">(stable trial)</text>
+  </g>
+  <g transform="translate(836,100)">
+    <rect class="blk" width="150" height="56" rx="8"/>
+    <text fill="currentColor" class="s" x="10" y="22">Normalization: none</text>
+    <line x1="8" y1="30" x2="142" y2="46" stroke="#a05252" stroke-width="2"/>
+    <text fill="currentColor" class="k" x="10" y="47">crossed out by design</text>
+  </g>
+  <g transform="translate(836,168)">
+    <rect class="blk" width="150" height="72" rx="8" stroke-dasharray="4 3"/>
+    <text fill="currentColor" class="s" x="10" y="21">Dropout 0.05</text>
+    <text fill="currentColor" class="k" x="10" y="38">requested knob — effective dropout: none;</text>
+    <text fill="currentColor" class="k" x="10" y="52">inactive: applied only between hidden layers</text>
+    <text fill="currentColor" class="k" x="10" y="66" font-style="italic">(builder: between layers only)</text>
+  </g>
+
+  <!-- output -->
+  <g transform="translate(1016,60)">
+    <rect class="blk" width="148" height="90" rx="10"/>
+    <text fill="currentColor" class="h" x="12" y="26">Linear scalar</text>
+    <text fill="currentColor" class="s" x="12" y="48">one score per ETF;</text>
+    <text fill="currentColor" class="s" x="12" y="64">no sigmoid/softmax</text>
+  </g>
+  <path class="ar" d="M996,118 H1012"/>
+
+  <!-- loss -->
+  <g transform="translate(596,250)">
+    <rect class="acc" width="330" height="120" rx="10"/>
+    <text fill="currentColor" class="h" x="14" y="26">Grouped LambdaRank loss</text>
+    <text fill="currentColor" class="s" x="14" y="50">pairs formed within each date group only</text>
+    <text fill="currentColor" class="s" x="14" y="68">NDCG-weighted lambdas · sigma = 1.25</text>
+    <text fill="currentColor" class="s" x="14" y="86">long-only actionable tail for selected trial</text>
+    <text fill="currentColor" class="k" x="14" y="107">group id = trading date; no cross-date pairs</text>
+  </g>
+
+  <!-- optimizer -->
+  <g transform="translate(956,250)">
+    <rect class="blk" width="208" height="120" rx="10"/>
+    <text fill="currentColor" class="h" x="14" y="26">Optimizer &amp; controls</text>
+    <text fill="currentColor" class="s" x="14" y="50">NAdam</text>
+    <text fill="currentColor" class="k" x="14" y="68">lr ≈ 7.17e-4 · weight decay ≈ 1.02e-8</text>
+    <text fill="currentColor" class="k" x="14" y="84">gradient clipping at 0.1</text>
+    <text fill="currentColor" class="k" x="14" y="103">walk-forward folds × seeds {7, 17}</text>
+  </g>
+  <path class="ar" d="M926,310 H952"/>
+
+  <!-- rank-to-position action + exits -->
+  <g transform="translate(300,430)">
+    <rect class="acc" width="220" height="86" rx="10"/>
+    <text fill="currentColor" class="h" x="14" y="28">Rank-to-position action</text>
+    <text fill="currentColor" class="s" x="14" y="50">rank scores within date;</text>
+    <text fill="currentColor" class="s" x="14" y="66">take top-two selection rule (equal-notional, long-only)</text>
+  </g>
+  <path class="ar" d="M700,370 C700,400 640,410 520,426"/>
+
+  <g transform="translate(570,430)">
+    <rect width="420" height="120" rx="10" fill="var(--warn,#fdf6ec)" stroke="#b98a3a" stroke-width="1.4" stroke-dasharray="6 3"/>
+    <text class="h" x="16" y="26" fill="#7a5a1e">Separate exit policy — not part of model training</text>
+    <text fill="currentColor" class="s" x="16" y="48">Baseline: fixed 6% take-profit / 5% stop-loss</text>
+    <text fill="currentColor" class="s" x="16" y="67">Strategy 2: ATR trailing stops — later diagnostic</text>
+    <rect x="16" y="92" width="270" height="18" rx="9" fill="#b98a3a" opacity=".16"/>
+    <text class="chip" x="24" y="105" fill="#7a5a1e" font-weight="700">POST-SELECTION DIAGNOSTIC — not model-selection evidence</text>
+  </g>
+  <path class="ar" d="M520,472 V490 H566" stroke-dasharray="5 3"/>
+
+  <text fill="currentColor" class="k" x="16" y="600">Effective graph of stable neural trial 99 (study LRank_sectors_both_broad_smooth_1): simpler than most of the searched space — one 128-unit layer beat deeper stacks.</text>
+</svg>

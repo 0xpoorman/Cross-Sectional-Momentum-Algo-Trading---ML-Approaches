@@ -1,0 +1,162 @@
+[
+ {
+  "id": "ch-equity-baseline",
+  "section": 3,
+  "question": "Did the earliest two-tail baselines produce a credible investment path?",
+  "source": "S7,S8,S13",
+  "fields": [
+   "timestamp",
+   "ending_equity",
+   "spy_equity"
+  ],
+  "comparison": "Separate panels: baseline window vs test window; each series rebased to 0% at common start; percentage scale",
+  "claim": "Baselines established a functioning pipeline, not a credible result: both trailed SPY materially. Curves are illustrative packaged runs, shown as separate common-window panels rebased to 0% with drawdown context; SPY is an external, non-risk-matched benchmark."
+ },
+ {
+  "id": "ch-timeline",
+  "section": 4,
+  "question": "How did the experiment discipline evolve?",
+  "source": "S11,S4",
+  "fields": [
+   "run start_time",
+   "package creation"
+  ],
+  "comparison": "Dates derived from MLflow run start times and artifact mtimes (August 2026)",
+  "claim": "Progression from ad-hoc runs to purged walk-forward searches with stability selection."
+ },
+ {
+  "id": "ch-tail-distribution",
+  "section": 5,
+  "question": "Which tail mode did the searches prefer?",
+  "source": "S5,S2",
+  "fields": [
+   "objective_metric by tail_mode"
+  ],
+  "comparison": "Fold-level Sharpe distributions long_only vs two_tail within each family",
+  "claim": "Long-only dominated across all three completed studies; two_tail means were negative in every family. Distributions reflect adaptive, imbalanced search allocation (187/203 completed trials long-only), not a balanced randomized comparison."
+ },
+ {
+  "id": "ch-trial-map",
+  "section": 5,
+  "question": "Where do the actual hyperparameter clusters sit, and which clusters were selected?",
+  "source": "optuna_clusters.csv and optuna_selection.json for all three studies",
+  "fields": [
+   "mean_sharpe",
+   "mean_fold_std",
+   "across_trial_std",
+   "trials",
+   "study",
+   "tail_mode",
+   "stability_score"
+  ],
+  "comparison": "One bubble per hyperparameter cluster; y=cluster raw mean Sharpe, x=mean fold dispersion, area=unique completed trials, ring=selected cluster",
+  "claim": "The selected regions are multi-trial long-only clusters with relatively high mean Sharpe; they are not individual winner points."
+ },
+ {
+  "id": "ch-dumbbell",
+  "section": 6,
+  "question": "How do selected-cluster, stable-trial, and best-single raw mean Sharpe compare before applying the stability penalty?",
+  "source": "S1,S2,S3",
+  "fields": [
+   "cluster_mean_sharpe",
+   "stable_mean_sharpe",
+   "best_single_mean_sharpe",
+   "fold_std",
+   "stability_penalty",
+   "objective"
+  ],
+  "comparison": "Chart uses raw mean Sharpe only; visible table separately decomposes mean Sharpe − 0.25×fold std = objective",
+  "claim": "Neural and legacy-tree stable choices give up some peak raw Sharpe to come from selected multi-trial regions; mixed-tree stable and best-single are the same trial."
+ },
+ {
+  "id": "svg-lambdamart",
+  "section": 7,
+  "question": "What is the effective selected tree architecture?",
+  "source": "S3",
+  "fields": [
+   "effective params"
+  ],
+  "comparison": "Requested num_leaves=31 vs effective 3 at depth 2",
+  "claim": "Effective capacity was far simpler than requested."
+ },
+ {
+  "id": "svg-lambdarank",
+  "section": 7,
+  "question": "What is the effective selected neural architecture?",
+  "source": "S1",
+  "fields": [
+   "effective params"
+  ],
+  "comparison": "128x1 LeakyReLU NAdam, no normalization, dropout requested-but-inactive",
+  "claim": "Single hidden layer won over deeper requested stacks."
+ },
+ {
+  "id": "ch-ndcg-sharpe",
+  "section": 8,
+  "question": "Do ranking quality and realized outcomes move together?",
+  "source": "S9,S10 + ranking_metrics.json of comparable runs",
+  "fields": [
+   "macro/long NDCG@2",
+   "realized Sharpe",
+   "total return"
+  ],
+  "comparison": "15 packaged runs sharing the 2025 test window and exit policy; SPY Sharpe dashed reference without NDCG coordinate",
+  "claim": "NDCG separates cleanly by tail mode while Sharpe spans -1.36 to +1.19: the two metrics answer different questions. All runs are illustrative packaged runs; none matches the frozen selected-trial fingerprint."
+ },
+ {
+  "id": "ch-long-short",
+  "section": 9,
+  "question": "How much fragility came from the short side?",
+  "source": "S9 + backtest_summary.json of two-tail runs",
+  "fields": [
+   "long_closed",
+   "short_closed",
+   "sharpe"
+  ],
+  "comparison": "Six comparable two-tail runs",
+  "claim": "Short-side expected returns were negative in every comparable run while longs stayed positive."
+ },
+ {
+  "id": "ch-stops",
+  "section": 9,
+  "question": "Where did stop losses concentrate?",
+  "source": "S9",
+  "fields": [
+   "Stop-Loss counts and $ by asset/side (LMart_sectors_7)"
+  ],
+  "comparison": "XLE/XLK vs other sectors, counts and dollars",
+  "claim": "Short stops dominate dollar losses (e.g., XLB-Short -$2,721 across 49 stops)."
+ },
+ {
+  "id": "ch-speed",
+  "section": 9,
+  "question": "Do losing trades behave differently before entry?",
+  "source": "S9,S10",
+  "fields": [
+   "entry-exit signed ROC",
+   "bars held by outcome"
+  ],
+  "comparison": "Profit vs loss trades per side",
+  "claim": "Losses held longer with weaker per-bar drift; phrased as association only."
+ },
+ {
+  "id": "ch-feat-ranks",
+  "section": 10,
+  "question": "Did feature importance move more than metrics?",
+  "source": "S12",
+  "fields": [
+   "rank positions per iteration"
+  ],
+  "comparison": "Rank trajectories atr_14, ret_20, volatility_20, vwap_dev_20, volume_z_20, MACD variant",
+  "claim": "ATR/volatility features persistently rank high; MACD variant ranks fell when excluded configurations won."
+ },
+ {
+  "id": "ch-strategy2",
+  "section": 10,
+  "question": "Does an ATR trailing exit improve the selected model?",
+  "source": "none found",
+  "fields": [],
+  "comparison": "",
+  "claim": "UNRESOLVED: no completed Strategy 2 package exists at build time; labeled post-selection gap."
+ }
+]

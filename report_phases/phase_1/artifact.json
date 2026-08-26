@@ -1,0 +1,1640 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Phase 1 \u2014 The honest disappointing start",
+    "description": "Technical evidence report for one phase of the Learning-to-Rank research program.",
+    "generatedAt": "2026-08-24T00:24:10+00:00",
+    "cards": [
+      {
+        "id": "lrank_sharpe",
+        "dataset": "summary",
+        "sourceId": "comparison",
+        "description": "LambdaRank strategy Sharpe, zero risk-free rate.",
+        "metrics": [
+          {
+            "label": "LambdaRank Sharpe",
+            "field": "lrank_sharpe",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "lmart_sharpe",
+        "dataset": "summary",
+        "sourceId": "comparison",
+        "description": "LambdaMART/TreeRank Sharpe or selected WFO objective.",
+        "metrics": [
+          {
+            "label": "Tree ranker Sharpe",
+            "field": "lmart_sharpe",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "spy_sharpe",
+        "dataset": "summary",
+        "sourceId": "dataset",
+        "description": "SPY buy-and-hold Sharpe over the displayed equity interval.",
+        "metrics": [
+          {
+            "label": "SPY Sharpe",
+            "field": "spy_sharpe",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "equal_sharpe",
+        "dataset": "summary",
+        "sourceId": "dataset",
+        "description": "Equal-weight sector buy-and-hold Sharpe over the displayed interval.",
+        "metrics": [
+          {
+            "label": "Equal-weight Sharpe",
+            "field": "equal_weight_sharpe",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "loss_chart",
+        "title": "LambdaRank training history",
+        "subtitle": "Same three LambdaRank diagnostics in every phase; this run contains 13 observed epochs. Loss remained near the chance-like 0.693 region and validation quality did not justify the fit.",
+        "type": "line",
+        "dataset": "history",
+        "sourceId": "history",
+        "encodings": {
+          "x": {
+            "field": "step",
+            "type": "quantitative",
+            "label": "Epoch"
+          },
+          "y": {
+            "fields": [
+              "LRank Train Loss",
+              "LRank Val Loss",
+              "LRank NDCG"
+            ],
+            "type": "quantitative",
+            "label": "Metric value",
+            "format": "number"
+          }
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "settings": {
+          "showPoints": "never"
+        }
+      },
+      {
+        "id": "equity_chart",
+        "title": "Cumulative return and market benchmarks",
+        "subtitle": "Percentage return from each series' first displayed observation; zero is the common baseline.",
+        "type": "line",
+        "dataset": "equity",
+        "sourceId": "dataset",
+        "encodings": {
+          "x": {
+            "field": "timestamp",
+            "type": "temporal",
+            "label": "Date"
+          },
+          "y": {
+            "fields": [
+              "lrank_return",
+              "lmart_return",
+              "spy_return",
+              "equal_weight_return"
+            ],
+            "type": "quantitative",
+            "label": "Cumulative return",
+            "format": "percent"
+          }
+        },
+        "valueFormat": "percent",
+        "layout": "full",
+        "referenceLines": [
+          {
+            "axis": "y",
+            "value": 0,
+            "label": "0%",
+            "color": "neutral"
+          }
+        ],
+        "settings": {
+          "showPoints": "never"
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "phase_contract",
+        "title": "Common comparison structure",
+        "subtitle": "Definitions and settings used to compare this phase with the other two.",
+        "dataset": "contract",
+        "sourceId": "comparison",
+        "defaultSort": {
+          "field": "item",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "item",
+            "label": "Item",
+            "type": "text"
+          },
+          {
+            "field": "phase_value",
+            "label": "Phase value",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "model_comparison",
+        "title": "Model evidence",
+        "subtitle": "Accuracy and NDCG are query-averaged; evidence basis is explicit per row.",
+        "dataset": "comparison",
+        "sourceId": "comparison",
+        "defaultSort": {
+          "field": "model",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "model",
+            "label": "Model",
+            "type": "text"
+          },
+          {
+            "field": "pairwise_accuracy",
+            "label": "Pairwise accuracy",
+            "format": "percent"
+          },
+          {
+            "field": "ndcg",
+            "label": "NDCG",
+            "format": "number"
+          },
+          {
+            "field": "sharpe",
+            "label": "Sharpe",
+            "format": "number"
+          },
+          {
+            "field": "evidence",
+            "label": "Evidence",
+            "type": "text"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "history",
+        "label": "Preserved training and optimization history",
+        "path": "phase_1/mlflow_metrics.csv",
+        "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('phase_1/mlflow_metrics.csv')",
+          "description": "Reads the preserved evidence file phase_1/mlflow_metrics.csv.",
+          "tables_used": [
+            "phase_1/mlflow_metrics.csv"
+          ],
+          "filters": [
+            "No row filter; report datasets are bounded during packaging."
+          ],
+          "metric_definitions": {
+            "pairwise_accuracy": "Correctly ordered within-date pairs divided by comparable pairs.",
+            "sharpe": "Mean periodic return divided by sample standard deviation, annualized with zero risk-free rate."
+          }
+        }
+      },
+      {
+        "id": "comparison",
+        "label": "Phase comparison evidence",
+        "path": "phase_1/comparison.csv",
+        "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('phase_1/comparison.csv')",
+          "description": "Reads the preserved evidence file phase_1/comparison.csv.",
+          "tables_used": [
+            "phase_1/comparison.csv"
+          ],
+          "filters": [
+            "No row filter; report datasets are bounded during packaging."
+          ],
+          "metric_definitions": {
+            "pairwise_accuracy": "Correctly ordered within-date pairs divided by comparable pairs.",
+            "sharpe": "Mean periodic return divided by sample standard deviation, annualized with zero risk-free rate."
+          }
+        }
+      },
+      {
+        "id": "dataset",
+        "label": "SPDR sector and SPY daily bars",
+        "path": "database/datasets/spdr_sectors_2018_2025.csv",
+        "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('database/datasets/spdr_sectors_2018_2025.csv')",
+          "description": "Reads the preserved evidence file database/datasets/spdr_sectors_2018_2025.csv.",
+          "tables_used": [
+            "database/datasets/spdr_sectors_2018_2025.csv"
+          ],
+          "filters": [
+            "No row filter; report datasets are bounded during packaging."
+          ],
+          "metric_definitions": {
+            "pairwise_accuracy": "Correctly ordered within-date pairs divided by comparable pairs.",
+            "sharpe": "Mean periodic return divided by sample standard deviation, annualized with zero risk-free rate."
+          }
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Phase 1 \u2014 The honest disappointing start"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## Technical summary\n\nBoth rankers were effectively chance-like out of sample. The initial design used a static three-bar hold, one purged split, a two-tail portfolio, ReLU-era architecture assumptions, and full LightGBM lists without truncation. The economic result did not justify the fit complexity."
+      },
+      {
+        "id": "metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "lrank_sharpe",
+          "lmart_sharpe",
+          "spy_sharpe",
+          "equal_sharpe"
+        ]
+      },
+      {
+        "id": "key_finding",
+        "type": "markdown",
+        "body": "## Optimization evidence\n\nEvery phase now uses the same three diagnostics: LambdaRank training loss, LambdaRank validation loss, and LambdaRank validation NDCG. Epoch counts may differ across phases because early stopping and final training duration are part of the observed evidence."
+      },
+      {
+        "id": "loss",
+        "type": "chart",
+        "chartId": "loss_chart",
+        "layout": "full"
+      },
+      {
+        "id": "equity_finding",
+        "type": "markdown",
+        "body": "## Economic evidence\n\nThe cumulative-return panel compares the strategy evidence with SPY and an equal-weight sector basket on a common 0% starting basis. Sharpe is shown separately because path quality and ending return answer different questions."
+      },
+      {
+        "id": "equity",
+        "type": "chart",
+        "chartId": "equity_chart",
+        "layout": "full"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## Scope, metrics, and model specification\n\nA query is one date across the 11 sectors. Pairwise accuracy is the share of correctly ordered within-date pairs; 50% is chance-like. NDCG rewards correct placement near the selected tail. Sharpe uses a zero risk-free rate."
+      },
+      {
+        "id": "contract",
+        "type": "table",
+        "tableId": "phase_contract",
+        "layout": "full"
+      },
+      {
+        "id": "comparison_intro",
+        "type": "markdown",
+        "body": "## Model comparison\n\nThe evidence column prevents an observed test result from being read as equivalent to a validation-only WFO selection statistic."
+      },
+      {
+        "id": "comparison_table",
+        "type": "table",
+        "tableId": "model_comparison",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## Limitations and robustness\n\nThe static-hold backtest is a clean reconstruction from the preserved data and parameter history, not byte-for-byte recovery of the original stop-based HTML. Phase 1 Sharpe uses non-overlapping three-bar cohorts and 252/3 annualization."
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## Recommended next step\n\nKeep this phase frozen as evidence. New tuning should use a new experiment identity, validation/WFO-only selection, and one final untouched-test evaluation."
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## Further questions\n\n- Does the long-only edge persist after costs and borrow-neutral constraints?\n- How sensitive is the selected configuration to the sector sample and start date?\n- Can one final test run reproduce the WFO-selected tree result without reopening model selection?"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-24T00:24:10+00:00",
+    "status": "ready",
+    "datasets": {
+      "summary": [
+        {
+          "lrank_sharpe": -0.007307881081613589,
+          "lmart_sharpe": 0.7063847610638798,
+          "spy_sharpe": 0.8921496229040042,
+          "equal_weight_sharpe": 0.692507101819336
+        }
+      ],
+      "history": [
+        {
+          "step": 1,
+          "LRank NDCG": 0.4141960619860683,
+          "LRank Train Loss": 0.7246631979942322,
+          "LRank Val Loss": 0.699700653553009
+        },
+        {
+          "step": 2,
+          "LRank NDCG": 0.4092678971814292,
+          "LRank Train Loss": 0.7146536111831665,
+          "LRank Val Loss": 0.6968951225280762
+        },
+        {
+          "step": 3,
+          "LRank NDCG": 0.4080734041475195,
+          "LRank Train Loss": 0.7161810994148254,
+          "LRank Val Loss": 0.6951310634613037
+        },
+        {
+          "step": 4,
+          "LRank NDCG": 0.3966379325885223,
+          "LRank Train Loss": 0.7098233699798584,
+          "LRank Val Loss": 0.696189284324646
+        },
+        {
+          "step": 5,
+          "LRank NDCG": 0.3899758495435097,
+          "LRank Train Loss": 0.7097944021224976,
+          "LRank Val Loss": 0.6959525346755981
+        },
+        {
+          "step": 6,
+          "LRank NDCG": 0.393085832529967,
+          "LRank Train Loss": 0.7048569917678833,
+          "LRank Val Loss": 0.6944730281829834
+        },
+        {
+          "step": 7,
+          "LRank NDCG": 0.3970363323692938,
+          "LRank Train Loss": 0.7007707953453064,
+          "LRank Val Loss": 0.6936562061309814
+        },
+        {
+          "step": 8,
+          "LRank NDCG": 0.3937317331141048,
+          "LRank Train Loss": 0.7056890726089478,
+          "LRank Val Loss": 0.6943065524101257
+        },
+        {
+          "step": 9,
+          "LRank NDCG": 0.3902945693681269,
+          "LRank Train Loss": 0.7020184397697449,
+          "LRank Val Loss": 0.6948983669281006
+        },
+        {
+          "step": 10,
+          "LRank NDCG": 0.3906041219494359,
+          "LRank Train Loss": 0.6993629932403564,
+          "LRank Val Loss": 0.6951234340667725
+        },
+        {
+          "step": 11,
+          "LRank NDCG": 0.3908339945745906,
+          "LRank Train Loss": 0.6983444094657898,
+          "LRank Val Loss": 0.6951454877853394
+        },
+        {
+          "step": 12,
+          "LRank NDCG": 0.393355545133199,
+          "LRank Train Loss": 0.6957738399505615,
+          "LRank Val Loss": 0.6950744986534119
+        },
+        {
+          "step": 13,
+          "LRank NDCG": 0.3942136901642799,
+          "LRank Train Loss": 0.6960146427154541,
+          "LRank Val Loss": 0.6949958801269531
+        }
+      ],
+      "equity": [
+        {
+          "timestamp": "2025-01-30 00:00:00+00:00",
+          "equal_weight_return": 0.0,
+          "lmart_return": 0.0,
+          "lrank_return": 0.0,
+          "spy_return": 0.0
+        },
+        {
+          "timestamp": "2025-01-31 00:00:00+00:00",
+          "equal_weight_return": -0.0068124689947026695,
+          "lmart_return": 0.0,
+          "lrank_return": 0.0,
+          "spy_return": -0.0053218090231170745
+        },
+        {
+          "timestamp": "2025-02-04 00:00:00+00:00",
+          "equal_weight_return": -0.005317542016834431,
+          "lmart_return": 0.0007140830766985129,
+          "lrank_return": 0.0012464717286364557,
+          "spy_return": -0.00538788658709588
+        },
+        {
+          "timestamp": "2025-02-06 00:00:00+00:00",
+          "equal_weight_return": -0.0005394124687928548,
+          "lmart_return": 0.0007140830766985129,
+          "lrank_return": 0.0012464717286364557,
+          "spy_return": 0.0021156107013640124
+        },
+        {
+          "timestamp": "2025-02-07 00:00:00+00:00",
+          "equal_weight_return": -0.0005394124687928548,
+          "lmart_return": 0.006010589761198615,
+          "lrank_return": 0.003578593178003908,
+          "spy_return": 0.0021156107013640124
+        },
+        {
+          "timestamp": "2025-02-10 00:00:00+00:00",
+          "equal_weight_return": -0.00010427940621893228,
+          "lmart_return": 0.006010589761198615,
+          "lrank_return": 0.003578593178003908,
+          "spy_return": -0.00031407363872526517
+        },
+        {
+          "timestamp": "2025-02-12 00:00:00+00:00",
+          "equal_weight_return": -0.002718794324946816,
+          "lmart_return": 0.013237565528408046,
+          "lrank_return": -0.004212132834715332,
+          "spy_return": -0.0027765915509777583
+        },
+        {
+          "timestamp": "2025-02-14 00:00:00+00:00",
+          "equal_weight_return": 0.004354864887083476,
+          "lmart_return": 0.013237565528408046,
+          "lrank_return": -0.004212132834715332,
+          "spy_return": 0.007702037795135341
+        },
+        {
+          "timestamp": "2025-02-18 00:00:00+00:00",
+          "equal_weight_return": 0.004354864887083476,
+          "lmart_return": 0.018358273263577862,
+          "lrank_return": -0.0055717178194478745,
+          "spy_return": 0.007702037795135341
+        },
+        {
+          "timestamp": "2025-02-19 00:00:00+00:00",
+          "equal_weight_return": 0.012021108606138364,
+          "lmart_return": 0.018358273263577862,
+          "lrank_return": -0.0055717178194478745,
+          "spy_return": 0.01304057141907311
+        },
+        {
+          "timestamp": "2025-02-21 00:00:00+00:00",
+          "equal_weight_return": -0.0030684597721358786,
+          "lmart_return": 0.02727106200961793,
+          "lrank_return": -0.014445738908066219,
+          "spy_return": -0.008428993603814994
+        },
+        {
+          "timestamp": "2025-02-25 00:00:00+00:00",
+          "equal_weight_return": -0.004188608361556323,
+          "lmart_return": 0.02727106200961793,
+          "lrank_return": -0.014445738908066219,
+          "spy_return": -0.017849971506615492
+        },
+        {
+          "timestamp": "2025-02-26 00:00:00+00:00",
+          "equal_weight_return": -0.004188608361556323,
+          "lmart_return": 0.005092957678745291,
+          "lrank_return": -0.021242786228456545,
+          "spy_return": -0.017849971506615492
+        },
+        {
+          "timestamp": "2025-02-27 00:00:00+00:00",
+          "equal_weight_return": -0.014317814797438433,
+          "lmart_return": 0.005092957678745291,
+          "lrank_return": -0.021242786228456545,
+          "spy_return": -0.033038987199216385
+        },
+        {
+          "timestamp": "2025-03-03 00:00:00+00:00",
+          "equal_weight_return": -0.011322396820592662,
+          "lmart_return": 0.008562525117621567,
+          "lrank_return": -0.01686993819092264,
+          "spy_return": -0.03515449529566739
+        },
+        {
+          "timestamp": "2025-03-04 00:00:00+00:00",
+          "equal_weight_return": -0.025590799737754577,
+          "lmart_return": 0.008562525117621567,
+          "lrank_return": -0.01686993819092264,
+          "spy_return": -0.04657544816286929
+        },
+        {
+          "timestamp": "2025-03-06 00:00:00+00:00",
+          "equal_weight_return": -0.0306852822520729,
+          "lmart_return": 0.0012606498898601881,
+          "lrank_return": -0.013753667422863769,
+          "spy_return": -0.05343427878288409
+        },
+        {
+          "timestamp": "2025-03-10 00:00:00+00:00",
+          "equal_weight_return": -0.03862881633144477,
+          "lmart_return": 0.0012606498898601881,
+          "lrank_return": -0.013753667422863769,
+          "spy_return": -0.07348266315566332
+        },
+        {
+          "timestamp": "2025-03-11 00:00:00+00:00",
+          "equal_weight_return": -0.03862881633144477,
+          "lmart_return": 0.011433950176671814,
+          "lrank_return": -0.010110338764371285,
+          "spy_return": -0.07348266315566332
+        },
+        {
+          "timestamp": "2025-03-12 00:00:00+00:00",
+          "equal_weight_return": -0.04986282335032233,
+          "lmart_return": 0.011433950176671814,
+          "lrank_return": -0.010110338764371285,
+          "spy_return": -0.07630891548453833
+        },
+        {
+          "timestamp": "2025-03-14 00:00:00+00:00",
+          "equal_weight_return": -0.04240411494648422,
+          "lmart_return": 0.01896439458704613,
+          "lrank_return": -0.007211389556703307,
+          "spy_return": -0.06979699207541212
+        },
+        {
+          "timestamp": "2025-03-18 00:00:00+00:00",
+          "equal_weight_return": -0.038800360927364275,
+          "lmart_return": 0.01896439458704613,
+          "lrank_return": -0.007211389556703307,
+          "spy_return": -0.07275539953224486
+        },
+        {
+          "timestamp": "2025-03-19 00:00:00+00:00",
+          "equal_weight_return": -0.038800360927364275,
+          "lmart_return": 0.014818704507037372,
+          "lrank_return": -0.003940901553708076,
+          "spy_return": -0.07275539953224486
+        },
+        {
+          "timestamp": "2025-03-20 00:00:00+00:00",
+          "equal_weight_return": -0.03250166347513361,
+          "lmart_return": 0.014818704507037372,
+          "lrank_return": -0.003940901553708076,
+          "spy_return": -0.06536753798074757
+        },
+        {
+          "timestamp": "2025-03-24 00:00:00+00:00",
+          "equal_weight_return": -0.021839366701817742,
+          "lmart_return": 0.027875399453888283,
+          "lrank_return": -0.004981367999122299,
+          "spy_return": -0.048315730092440834
+        },
+        {
+          "timestamp": "2025-03-26 00:00:00+00:00",
+          "equal_weight_return": -0.025081998983241816,
+          "lmart_return": 0.027875399453888283,
+          "lrank_return": -0.004981367999122299,
+          "spy_return": -0.05741678587647481
+        },
+        {
+          "timestamp": "2025-03-27 00:00:00+00:00",
+          "equal_weight_return": -0.025081998983241816,
+          "lmart_return": 0.028452493158472203,
+          "lrank_return": -0.008718814295101796,
+          "spy_return": -0.05741678587647481
+        },
+        {
+          "timestamp": "2025-03-28 00:00:00+00:00",
+          "equal_weight_return": -0.039635677991849194,
+          "lmart_return": 0.028452493158472203,
+          "lrank_return": -0.008718814295101796,
+          "spy_return": -0.0788516704387654
+        },
+        {
+          "timestamp": "2025-04-01 00:00:00+00:00",
+          "equal_weight_return": -0.029298766567312118,
+          "lmart_return": 0.013432237865317553,
+          "lrank_return": 0.003180846312322849,
+          "spy_return": -0.07004898974176599
+        },
+        {
+          "timestamp": "2025-04-03 00:00:00+00:00",
+          "equal_weight_return": -0.061733273715477543,
+          "lmart_return": 0.013432237865317553,
+          "lrank_return": 0.003180846312322849,
+          "spy_return": -0.11028263344128053
+        },
+        {
+          "timestamp": "2025-04-04 00:00:00+00:00",
+          "equal_weight_return": -0.11765806418959979,
+          "lmart_return": -0.017110889502151228,
+          "lrank_return": 0.02398031925890831,
+          "spy_return": -0.16236935059914093
+        },
+        {
+          "timestamp": "2025-04-08 00:00:00+00:00",
+          "equal_weight_return": -0.1394008584586911,
+          "lmart_return": -0.017110889502151228,
+          "lrank_return": 0.02398031925890831,
+          "spy_return": -0.17695756322360834
+        },
+        {
+          "timestamp": "2025-04-09 00:00:00+00:00",
+          "equal_weight_return": -0.1394008584586911,
+          "lmart_return": 0.0040583533165625685,
+          "lrank_return": 0.03402797923348855,
+          "spy_return": -0.17695756322360834
+        },
+        {
+          "timestamp": "2025-04-10 00:00:00+00:00",
+          "equal_weight_return": -0.10236895545590652,
+          "lmart_return": 0.0040583533165625685,
+          "lrank_return": 0.03402797923348855,
+          "spy_return": -0.1303746249020893
+        },
+        {
+          "timestamp": "2025-04-14 00:00:00+00:00",
+          "equal_weight_return": -0.07714315683466044,
+          "lmart_return": 0.010762395231612265,
+          "lrank_return": 0.030768030065999374,
+          "spy_return": -0.10627078134256895
+        },
+        {
+          "timestamp": "2025-04-16 00:00:00+00:00",
+          "equal_weight_return": -0.09128286605669411,
+          "lmart_return": 0.010762395231612265,
+          "lrank_return": 0.030768030065999374,
+          "spy_return": -0.12858437437988157
+        },
+        {
+          "timestamp": "2025-04-17 00:00:00+00:00",
+          "equal_weight_return": -0.09128286605669411,
+          "lmart_return": -0.006042237765416125,
+          "lrank_return": 0.012898109157806203,
+          "spy_return": -0.12858437437988157
+        },
+        {
+          "timestamp": "2025-04-21 00:00:00+00:00",
+          "equal_weight_return": -0.10332905583127006,
+          "lmart_return": -0.006042237765416125,
+          "lrank_return": 0.012898109157806203,
+          "spy_return": -0.14811270575106694
+        },
+        {
+          "timestamp": "2025-04-23 00:00:00+00:00",
+          "equal_weight_return": -0.07472367916283029,
+          "lmart_return": 0.0025264631541497273,
+          "lrank_return": 0.00976707124098275,
+          "spy_return": -0.1124046056472513
+        },
+        {
+          "timestamp": "2025-04-25 00:00:00+00:00",
+          "equal_weight_return": -0.06054374764646797,
+          "lmart_return": 0.0025264631541497273,
+          "lrank_return": 0.00976707124098275,
+          "spy_return": -0.0871734419084842
+        },
+        {
+          "timestamp": "2025-04-28 00:00:00+00:00",
+          "equal_weight_return": -0.06054374764646797,
+          "lmart_return": 0.012155782162801998,
+          "lrank_return": 0.011456764986185197,
+          "spy_return": -0.0871734419084842
+        },
+        {
+          "timestamp": "2025-04-29 00:00:00+00:00",
+          "equal_weight_return": -0.05183041577830205,
+          "lmart_return": 0.012155782162801998,
+          "lrank_return": 0.011456764986185197,
+          "spy_return": -0.08107296420053023
+        },
+        {
+          "timestamp": "2025-05-01 00:00:00+00:00",
+          "equal_weight_return": -0.051881445078393984,
+          "lmart_return": 0.007592185662317785,
+          "lrank_return": 0.005752934054009229,
+          "spy_return": -0.07419340738808733
+        },
+        {
+          "timestamp": "2025-05-05 00:00:00+00:00",
+          "equal_weight_return": -0.042868105449961,
+          "lmart_return": 0.007592185662317785,
+          "lrank_return": 0.005752934054009229,
+          "spy_return": -0.06583828932163993
+        },
+        {
+          "timestamp": "2025-05-06 00:00:00+00:00",
+          "equal_weight_return": -0.042868105449961,
+          "lmart_return": 0.009516776851286712,
+          "lrank_return": -0.003164522130029712,
+          "spy_return": -0.06583828932163993
+        },
+        {
+          "timestamp": "2025-05-07 00:00:00+00:00",
+          "equal_weight_return": -0.04537567408800347,
+          "lmart_return": 0.009516776851286712,
+          "lrank_return": -0.003164522130029712,
+          "spy_return": -0.06975051204981841
+        },
+        {
+          "timestamp": "2025-05-08 00:00:00+00:00",
+          "equal_weight_return": -0.041369964309664886,
+          "lmart_return": 0.009516776851286712,
+          "lrank_return": -0.003164522130029712,
+          "spy_return": -0.06326875448511726
+        },
+        {
+          "timestamp": "2025-05-09 00:00:00+00:00",
+          "equal_weight_return": -0.041369964309664886,
+          "lmart_return": 0.02977754714125047,
+          "lrank_return": -0.018265061116669257,
+          "spy_return": -0.06326875448511726
+        },
+        {
+          "timestamp": "2025-05-12 00:00:00+00:00",
+          "equal_weight_return": -0.02103665841334401,
+          "lmart_return": 0.02977754714125047,
+          "lrank_return": -0.018265061116669257,
+          "spy_return": -0.03354523984001023
+        },
+        {
+          "timestamp": "2025-05-14 00:00:00+00:00",
+          "equal_weight_return": -0.024743697253725383,
+          "lmart_return": 0.028158685313018017,
+          "lrank_return": -0.021492970758704266,
+          "spy_return": -0.025919437495241726
+        },
+        {
+          "timestamp": "2025-05-16 00:00:00+00:00",
+          "equal_weight_return": -0.005838289625640702,
+          "lmart_return": 0.028158685313018017,
+          "lrank_return": -0.021492970758704266,
+          "spy_return": -0.014961745810282312
+        },
+        {
+          "timestamp": "2025-05-19 00:00:00+00:00",
+          "equal_weight_return": -0.005838289625640702,
+          "lmart_return": 0.02497774912497852,
+          "lrank_return": -0.016642054033852216,
+          "spy_return": -0.014961745810282312
+        },
+        {
+          "timestamp": "2025-05-20 00:00:00+00:00",
+          "equal_weight_return": -0.0073936455125316325,
+          "lmart_return": 0.02497774912497852,
+          "lrank_return": -0.016642054033852216,
+          "spy_return": -0.01719986677778096
+        },
+        {
+          "timestamp": "2025-05-22 00:00:00+00:00",
+          "equal_weight_return": -0.027993787031583506,
+          "lmart_return": 0.026183176151457266,
+          "lrank_return": -0.007841406222409586,
+          "spy_return": -0.03337943030058521
+        },
+        {
+          "timestamp": "2025-05-27 00:00:00+00:00",
+          "equal_weight_return": -0.013718392279794767,
+          "lmart_return": 0.026183176151457266,
+          "lrank_return": -0.007841406222409586,
+          "spy_return": -0.02001780810870213
+        },
+        {
+          "timestamp": "2025-05-28 00:00:00+00:00",
+          "equal_weight_return": -0.013718392279794767,
+          "lmart_return": 0.027034970114633072,
+          "lrank_return": -0.007838548284708646,
+          "spy_return": -0.02001780810870213
+        },
+        {
+          "timestamp": "2025-05-29 00:00:00+00:00",
+          "equal_weight_return": -0.01727201955982527,
+          "lmart_return": 0.027034970114633072,
+          "lrank_return": -0.007838548284708646,
+          "spy_return": -0.021841405227638222
+        },
+        {
+          "timestamp": "2025-06-02 00:00:00+00:00",
+          "equal_weight_return": -0.012546907902141857,
+          "lmart_return": 0.02801925903903668,
+          "lrank_return": -0.002606759909398071,
+          "spy_return": -0.017431856486097796
+        },
+        {
+          "timestamp": "2025-06-04 00:00:00+00:00",
+          "equal_weight_return": -0.011342500247848886,
+          "lmart_return": 0.02801925903903668,
+          "lrank_return": -0.002606759909398071,
+          "spy_return": -0.012093835886724968
+        },
+        {
+          "timestamp": "2025-06-05 00:00:00+00:00",
+          "equal_weight_return": -0.011342500247848886,
+          "lmart_return": 0.03813194795622299,
+          "lrank_return": -0.010222952015507158,
+          "spy_return": -0.012093835886724968
+        },
+        {
+          "timestamp": "2025-06-06 00:00:00+00:00",
+          "equal_weight_return": -0.007133151764349588,
+          "lmart_return": 0.03813194795622299,
+          "lrank_return": -0.010222952015507158,
+          "spy_return": -0.0067724372832599355
+        },
+        {
+          "timestamp": "2025-06-10 00:00:00+00:00",
+          "equal_weight_return": -0.00035323994370917156,
+          "lmart_return": 0.03464577454574047,
+          "lrank_return": -0.012379824189081123,
+          "spy_return": -0.00024081373083573165
+        },
+        {
+          "timestamp": "2025-06-11 00:00:00+00:00",
+          "equal_weight_return": -0.00187905369486141,
+          "lmart_return": 0.03464577454574047,
+          "lrank_return": -0.012379824189081123,
+          "spy_return": -0.003092306868311301
+        },
+        {
+          "timestamp": "2025-06-13 00:00:00+00:00",
+          "equal_weight_return": -0.006917154839239381,
+          "lmart_return": 0.044422653476204,
+          "lrank_return": -0.010841421878694413,
+          "spy_return": -0.010320104755512038
+        },
+        {
+          "timestamp": "2025-06-17 00:00:00+00:00",
+          "equal_weight_return": -0.008676826900384738,
+          "lmart_return": 0.044422653476204,
+          "lrank_return": -0.010841421878694413,
+          "spy_return": -0.009441396280489678
+        },
+        {
+          "timestamp": "2025-06-18 00:00:00+00:00",
+          "equal_weight_return": -0.008676826900384738,
+          "lmart_return": 0.047143591305855326,
+          "lrank_return": -0.0133150366539867,
+          "spy_return": -0.009441396280489678
+        },
+        {
+          "timestamp": "2025-06-20 00:00:00+00:00",
+          "equal_weight_return": -0.009124002828589495,
+          "lmart_return": 0.047143591305855326,
+          "lrank_return": -0.0133150366539867,
+          "spy_return": -0.011916637201955793
+        },
+        {
+          "timestamp": "2025-06-24 00:00:00+00:00",
+          "equal_weight_return": 0.006448736442169256,
+          "lmart_return": 0.029812660978759675,
+          "lrank_return": 0.003938862630892936,
+          "spy_return": 0.008866603557804886
+        },
+        {
+          "timestamp": "2025-06-26 00:00:00+00:00",
+          "equal_weight_return": 0.005912670121920982,
+          "lmart_return": 0.029812660978759675,
+          "lrank_return": 0.003938862630892936,
+          "spy_return": 0.01732935417800019
+        },
+        {
+          "timestamp": "2025-06-27 00:00:00+00:00",
+          "equal_weight_return": 0.005912670121920982,
+          "lmart_return": 0.038693197091359766,
+          "lrank_return": 0.0013674865348476395,
+          "spy_return": 0.01732935417800019
+        },
+        {
+          "timestamp": "2025-06-30 00:00:00+00:00",
+          "equal_weight_return": 0.013932518047183429,
+          "lmart_return": 0.038693197091359766,
+          "lrank_return": 0.0013674865348476395,
+          "spy_return": 0.027272180668372448
+        },
+        {
+          "timestamp": "2025-07-02 00:00:00+00:00",
+          "equal_weight_return": 0.023009458395414573,
+          "lmart_return": 0.03793213263976791,
+          "lrank_return": 0.00013803320380678663,
+          "spy_return": 0.0315950282584192
+        },
+        {
+          "timestamp": "2025-07-07 00:00:00+00:00",
+          "equal_weight_return": 0.020856541135739537,
+          "lmart_return": 0.03793213263976791,
+          "lrank_return": 0.00013803320380678663,
+          "spy_return": 0.03197733416429638
+        },
+        {
+          "timestamp": "2025-07-08 00:00:00+00:00",
+          "equal_weight_return": 0.020856541135739537,
+          "lmart_return": 0.040563258745221376,
+          "lrank_return": 0.004555593390411561,
+          "spy_return": 0.03197733416429638
+        },
+        {
+          "timestamp": "2025-07-09 00:00:00+00:00",
+          "equal_weight_return": 0.024577294669694716,
+          "lmart_return": 0.040563258745221376,
+          "lrank_return": 0.004555593390411561,
+          "spy_return": 0.037597210459709096
+        },
+        {
+          "timestamp": "2025-07-11 00:00:00+00:00",
+          "equal_weight_return": 0.025258579442155815,
+          "lmart_return": 0.04887370497717236,
+          "lrank_return": 0.004902705510741123,
+          "spy_return": 0.036865534825030855
+        },
+        {
+          "timestamp": "2025-07-15 00:00:00+00:00",
+          "equal_weight_return": 0.015680074151627643,
+          "lmart_return": 0.04887370497717236,
+          "lrank_return": 0.004902705510741123,
+          "spy_return": 0.03440486380121244
+        },
+        {
+          "timestamp": "2025-07-16 00:00:00+00:00",
+          "equal_weight_return": 0.01929839136452549,
+          "lmart_return": 0.05052831509905631,
+          "lrank_return": 0.011377988599950095,
+          "spy_return": 0.037863162394232264
+        },
+        {
+          "timestamp": "2025-07-18 00:00:00+00:00",
+          "equal_weight_return": 0.024745111962660937,
+          "lmart_return": 0.05052831509905631,
+          "lrank_return": 0.011377988599950095,
+          "spy_return": 0.0434496920929166
+        },
+        {
+          "timestamp": "2025-07-21 00:00:00+00:00",
+          "equal_weight_return": 0.024745111962660937,
+          "lmart_return": 0.04875917571017152,
+          "lrank_return": 0.007211934437019396,
+          "spy_return": 0.0434496920929166
+        },
+        {
+          "timestamp": "2025-07-22 00:00:00+00:00",
+          "equal_weight_return": 0.03333691049333054,
+          "lmart_return": 0.04875917571017152,
+          "lrank_return": 0.007211934437019396,
+          "spy_return": 0.045578025803493905
+        },
+        {
+          "timestamp": "2025-07-24 00:00:00+00:00",
+          "equal_weight_return": 0.03797848414336458,
+          "lmart_return": 0.04958991120294254,
+          "lrank_return": 0.011830048584519082,
+          "spy_return": 0.05482221544117749
+        },
+        {
+          "timestamp": "2025-07-28 00:00:00+00:00",
+          "equal_weight_return": 0.0364798898698977,
+          "lmart_return": 0.04958991120294254,
+          "lrank_return": 0.011830048584519082,
+          "spy_return": 0.05901229227378857
+        },
+        {
+          "timestamp": "2025-07-29 00:00:00+00:00",
+          "equal_weight_return": 0.0364798898698977,
+          "lmart_return": 0.04920706957364085,
+          "lrank_return": 0.012628591679278989,
+          "spy_return": 0.05901229227378857
+        },
+        {
+          "timestamp": "2025-07-30 00:00:00+00:00",
+          "equal_weight_return": 0.031249256326580932,
+          "lmart_return": 0.04920706957364085,
+          "lrank_return": 0.012628591679278989,
+          "spy_return": 0.05488880602972146
+        },
+        {
+          "timestamp": "2025-08-01 00:00:00+00:00",
+          "equal_weight_return": 0.013587734451937061,
+          "lmart_return": 0.05600261423846087,
+          "lrank_return": 0.00039360901175555796,
+          "spy_return": 0.033706534763262797
+        },
+        {
+          "timestamp": "2025-08-05 00:00:00+00:00",
+          "equal_weight_return": 0.02292868536796866,
+          "lmart_return": 0.05600261423846087,
+          "lrank_return": 0.00039360901175555796,
+          "spy_return": 0.04409815514314319
+        },
+        {
+          "timestamp": "2025-08-06 00:00:00+00:00",
+          "equal_weight_return": 0.02292868536796866,
+          "lmart_return": 0.051293698891363926,
+          "lrank_return": 0.0006440838637888913,
+          "spy_return": 0.04409815514314319
+        },
+        {
+          "timestamp": "2025-08-07 00:00:00+00:00",
+          "equal_weight_return": 0.023128914031971703,
+          "lmart_return": 0.051293698891363926,
+          "lrank_return": 0.0006440838637888913,
+          "spy_return": 0.051214318884988286
+        },
+        {
+          "timestamp": "2025-08-11 00:00:00+00:00",
+          "equal_weight_return": 0.024273895219063313,
+          "lmart_return": 0.03954241152147353,
+          "lrank_return": 0.004489893103964748,
+          "spy_return": 0.05731633566663752
+        },
+        {
+          "timestamp": "2025-08-13 00:00:00+00:00",
+          "equal_weight_return": 0.04161154190634164,
+          "lmart_return": 0.03954241152147353,
+          "lrank_return": 0.004489893103964748,
+          "spy_return": 0.07223037019236989
+        },
+        {
+          "timestamp": "2025-08-14 00:00:00+00:00",
+          "equal_weight_return": 0.04161154190634164,
+          "lmart_return": 0.04589533694968817,
+          "lrank_return": 0.012191801076457676,
+          "spy_return": 0.07223037019236989
+        },
+        {
+          "timestamp": "2025-08-15 00:00:00+00:00",
+          "equal_weight_return": 0.037742063809920845,
+          "lmart_return": 0.04589533694968817,
+          "lrank_return": 0.012191801076457676,
+          "spy_return": 0.06981946255136151
+        },
+        {
+          "timestamp": "2025-08-18 00:00:00+00:00",
+          "equal_weight_return": 0.035489861709582016,
+          "lmart_return": 0.04589533694968817,
+          "lrank_return": 0.012191801076457676,
+          "spy_return": 0.06958665200374048
+        },
+        {
+          "timestamp": "2025-08-19 00:00:00+00:00",
+          "equal_weight_return": 0.035489861709582016,
+          "lmart_return": 0.044514696860887604,
+          "lrank_return": 0.019953770142536742,
+          "spy_return": 0.06958665200374048
+        },
+        {
+          "timestamp": "2025-08-20 00:00:00+00:00",
+          "equal_weight_return": 0.038922781608370594,
+          "lmart_return": 0.044514696860887604,
+          "lrank_return": 0.019953770142536742,
+          "spy_return": 0.0609575788195551
+        },
+        {
+          "timestamp": "2025-08-22 00:00:00+00:00",
+          "equal_weight_return": 0.050956489991385245,
+          "lmart_return": 0.051073623703977944,
+          "lrank_return": 0.02615697556912977,
+          "spy_return": 0.07292859662540652
+        },
+        {
+          "timestamp": "2025-08-26 00:00:00+00:00",
+          "equal_weight_return": 0.04658740075272849,
+          "lmart_return": 0.051073623703977944,
+          "lrank_return": 0.02615697556912977,
+          "spy_return": 0.0726791640818778
+        },
+        {
+          "timestamp": "2025-08-27 00:00:00+00:00",
+          "equal_weight_return": 0.04658740075272849,
+          "lmart_return": 0.056535440607101695,
+          "lrank_return": 0.03006922227911657,
+          "spy_return": 0.0726791640818778
+        },
+        {
+          "timestamp": "2025-08-28 00:00:00+00:00",
+          "equal_weight_return": 0.049835669216077294,
+          "lmart_return": 0.056535440607101695,
+          "lrank_return": 0.03006922227911657,
+          "spy_return": 0.07893077882669641
+        },
+        {
+          "timestamp": "2025-09-02 00:00:00+00:00",
+          "equal_weight_return": 0.04229053127403315,
+          "lmart_return": 0.05644827113979045,
+          "lrank_return": 0.0276242746302775,
+          "spy_return": 0.06454885337983662
+        },
+        {
+          "timestamp": "2025-09-04 00:00:00+00:00",
+          "equal_weight_return": 0.047615457737092415,
+          "lmart_return": 0.05644827113979045,
+          "lrank_return": 0.0276242746302775,
+          "spy_return": 0.07926321874485054
+        },
+        {
+          "timestamp": "2025-09-05 00:00:00+00:00",
+          "equal_weight_return": 0.047615457737092415,
+          "lmart_return": 0.056342311571537795,
+          "lrank_return": 0.025948881821354686,
+          "spy_return": 0.07926321874485054
+        },
+        {
+          "timestamp": "2025-09-08 00:00:00+00:00",
+          "equal_weight_return": 0.04560952615436897,
+          "lmart_return": 0.056342311571537795,
+          "lrank_return": 0.025948881821354686,
+          "spy_return": 0.07878118086352703
+        },
+        {
+          "timestamp": "2025-09-10 00:00:00+00:00",
+          "equal_weight_return": 0.04828032329791032,
+          "lmart_return": 0.06695961136928408,
+          "lrank_return": 0.02411567991353225,
+          "spy_return": 0.08440095455402674
+        },
+        {
+          "timestamp": "2025-09-12 00:00:00+00:00",
+          "equal_weight_return": 0.05806935956292936,
+          "lmart_return": 0.06695961136928408,
+          "lrank_return": 0.02411567991353225,
+          "spy_return": 0.09304675233903281
+        },
+        {
+          "timestamp": "2025-09-15 00:00:00+00:00",
+          "equal_weight_return": 0.05806935956292936,
+          "lmart_return": 0.0677039769973149,
+          "lrank_return": 0.021594101636887908,
+          "spy_return": 0.09304675233903281
+        },
+        {
+          "timestamp": "2025-09-16 00:00:00+00:00",
+          "equal_weight_return": 0.057347370461863,
+          "lmart_return": 0.0677039769973149,
+          "lrank_return": 0.021594101636887908,
+          "spy_return": 0.09735308053808489
+        },
+        {
+          "timestamp": "2025-09-18 00:00:00+00:00",
+          "equal_weight_return": 0.06069128980770788,
+          "lmart_return": 0.07130565396953892,
+          "lrank_return": 0.019161654566644648,
+          "spy_return": 0.10111067766235626
+        },
+        {
+          "timestamp": "2025-09-19 00:00:00+00:00",
+          "equal_weight_return": 0.061653804040065596,
+          "lmart_return": 0.07130565396953892,
+          "lrank_return": 0.019161654566644648,
+          "spy_return": 0.10656433399869192
+        },
+        {
+          "timestamp": "2025-09-23 00:00:00+00:00",
+          "equal_weight_return": 0.06365917743189775,
+          "lmart_return": 0.06343296218322148,
+          "lrank_return": 0.013956906561044313,
+          "spy_return": 0.10574749628621527
+        },
+        {
+          "timestamp": "2025-09-25 00:00:00+00:00",
+          "equal_weight_return": 0.05498863142729493,
+          "lmart_return": 0.06343296218322148,
+          "lrank_return": 0.013956906561044313,
+          "spy_return": 0.09714427954010829
+        },
+        {
+          "timestamp": "2025-09-26 00:00:00+00:00",
+          "equal_weight_return": 0.05498863142729493,
+          "lmart_return": 0.0725259734310657,
+          "lrank_return": 0.01190381077504643,
+          "spy_return": 0.09714427954010829
+        },
+        {
+          "timestamp": "2025-09-29 00:00:00+00:00",
+          "equal_weight_return": 0.06649849818087761,
+          "lmart_return": 0.0725259734310657,
+          "lrank_return": 0.01190381077504643,
+          "spy_return": 0.10653098740196354
+        },
+        {
+          "timestamp": "2025-10-01 00:00:00+00:00",
+          "equal_weight_return": 0.07080347344285776,
+          "lmart_return": 0.06723186030461337,
+          "lrank_return": 0.0038415883526419226,
+          "spy_return": 0.11448389420940974
+        },
+        {
+          "timestamp": "2025-10-03 00:00:00+00:00",
+          "equal_weight_return": 0.07252330437111687,
+          "lmart_return": 0.06723186030461337,
+          "lrank_return": 0.0038415883526419226,
+          "spy_return": 0.11575106488508968
+        },
+        {
+          "timestamp": "2025-10-06 00:00:00+00:00",
+          "equal_weight_return": 0.07252330437111687,
+          "lmart_return": 0.07281128863976472,
+          "lrank_return": -0.005779542729695164,
+          "spy_return": 0.11575106488508968
+        },
+        {
+          "timestamp": "2025-10-07 00:00:00+00:00",
+          "equal_weight_return": 0.07196265300113569,
+          "lmart_return": 0.07281128863976472,
+          "lrank_return": -0.005779542729695164,
+          "spy_return": 0.11560085129244224
+        },
+        {
+          "timestamp": "2025-10-09 00:00:00+00:00",
+          "equal_weight_return": 0.0679129398442635,
+          "lmart_return": 0.07748434273541394,
+          "lrank_return": -0.009385698905705953,
+          "spy_return": 0.11900210155382829
+        },
+        {
+          "timestamp": "2025-10-13 00:00:00+00:00",
+          "equal_weight_return": 0.05842531321148403,
+          "lmart_return": 0.07748434273541394,
+          "lrank_return": -0.009385698905705953,
+          "spy_return": 0.10546389630665409
+        },
+        {
+          "timestamp": "2025-10-14 00:00:00+00:00",
+          "equal_weight_return": 0.05842531321148403,
+          "lmart_return": 0.06780544467041416,
+          "lrank_return": -0.0035594891548549334,
+          "spy_return": 0.10546389630665409
+        },
+        {
+          "timestamp": "2025-10-15 00:00:00+00:00",
+          "equal_weight_return": 0.06862197820817784,
+          "lmart_return": 0.06780544467041416,
+          "lrank_return": -0.0035594891548549334,
+          "spy_return": 0.10901515495086156
+        },
+        {
+          "timestamp": "2025-10-17 00:00:00+00:00",
+          "equal_weight_return": 0.06448305510625496,
+          "lmart_return": 0.06432782668052939,
+          "lrank_return": -0.0077169858803917135,
+          "spy_return": 0.10771474028336603
+        },
+        {
+          "timestamp": "2025-10-21 00:00:00+00:00",
+          "equal_weight_return": 0.0739222425569146,
+          "lmart_return": 0.06432782668052939,
+          "lrank_return": -0.0077169858803917135,
+          "spy_return": 0.11921880313010647
+        },
+        {
+          "timestamp": "2025-10-22 00:00:00+00:00",
+          "equal_weight_return": 0.07138868968522405,
+          "lmart_return": 0.0685747305228348,
+          "lrank_return": -0.008589432425372356,
+          "spy_return": 0.11340007851327938
+        },
+        {
+          "timestamp": "2025-10-24 00:00:00+00:00",
+          "equal_weight_return": 0.07888128185454835,
+          "lmart_return": 0.0685747305228348,
+          "lrank_return": -0.008589432425372356,
+          "spy_return": 0.12915578114043713
+        },
+        {
+          "timestamp": "2025-10-27 00:00:00+00:00",
+          "equal_weight_return": 0.07888128185454835,
+          "lmart_return": 0.07856888092924108,
+          "lrank_return": -0.005540927460793488,
+          "spy_return": 0.12915578114043713
+        },
+        {
+          "timestamp": "2025-10-28 00:00:00+00:00",
+          "equal_weight_return": 0.07890500563464942,
+          "lmart_return": 0.07856888092924108,
+          "lrank_return": -0.005540927460793488,
+          "spy_return": 0.14551161990379358
+        },
+        {
+          "timestamp": "2025-10-30 00:00:00+00:00",
+          "equal_weight_return": 0.06364877715436701,
+          "lmart_return": 0.09494226535140426,
+          "lrank_return": -0.00444968581639027,
+          "spy_return": 0.1334573895134905
+        },
+        {
+          "timestamp": "2025-11-03 00:00:00+00:00",
+          "equal_weight_return": 0.06452803566817877,
+          "lmart_return": 0.09494226535140426,
+          "lrank_return": -0.00444968581639027,
+          "spy_return": 0.1393093581221332
+        },
+        {
+          "timestamp": "2025-11-04 00:00:00+00:00",
+          "equal_weight_return": 0.06452803566817877,
+          "lmart_return": 0.0995484845876502,
+          "lrank_return": -0.0011625127970691373,
+          "spy_return": 0.1393093581221332
+        },
+        {
+          "timestamp": "2025-11-05 00:00:00+00:00",
+          "equal_weight_return": 0.061525912827899765,
+          "lmart_return": 0.0995484845876502,
+          "lrank_return": -0.0011625127970691373,
+          "spy_return": 0.12970594868399954
+        },
+        {
+          "timestamp": "2025-11-07 00:00:00+00:00",
+          "equal_weight_return": 0.06174686946727581,
+          "lmart_return": 0.08494259933366388,
+          "lrank_return": -0.002877938775585953,
+          "spy_return": 0.11868525758245174
+        },
+        {
+          "timestamp": "2025-11-11 00:00:00+00:00",
+          "equal_weight_return": 0.07682757842278809,
+          "lmart_return": 0.08494259933366388,
+          "lrank_return": -0.002877938775585953,
+          "spy_return": 0.13874256858266287
+        },
+        {
+          "timestamp": "2025-11-12 00:00:00+00:00",
+          "equal_weight_return": 0.07682757842278809,
+          "lmart_return": 0.08527892971338402,
+          "lrank_return": -0.009196017472723694,
+          "spy_return": 0.13874256858266287
+        },
+        {
+          "timestamp": "2025-11-13 00:00:00+00:00",
+          "equal_weight_return": 0.06435921282515644,
+          "lmart_return": 0.08527892971338402,
+          "lrank_return": -0.009196017472723694,
+          "spy_return": 0.12046935180987894
+        },
+        {
+          "timestamp": "2025-11-17 00:00:00+00:00",
+          "equal_weight_return": 0.05463269870029541,
+          "lmart_return": 0.06426749469655157,
+          "lrank_return": -0.00610460487981046,
+          "spy_return": 0.10984881986907213
+        },
+        {
+          "timestamp": "2025-11-19 00:00:00+00:00",
+          "equal_weight_return": 0.05026557045444546,
+          "lmart_return": 0.06426749469655157,
+          "lrank_return": -0.00610460487981046,
+          "spy_return": 0.10478034237617795
+        },
+        {
+          "timestamp": "2025-11-20 00:00:00+00:00",
+          "equal_weight_return": 0.05026557045444546,
+          "lmart_return": 0.06172790514945592,
+          "lrank_return": -0.0023770128905915566,
+          "spy_return": 0.10478034237617795
+        },
+        {
+          "timestamp": "2025-11-21 00:00:00+00:00",
+          "equal_weight_return": 0.05164587955431599,
+          "lmart_return": 0.06172790514945592,
+          "lrank_return": -0.0023770128905915566,
+          "spy_return": 0.09877816017488805
+        },
+        {
+          "timestamp": "2025-11-24 00:00:00+00:00",
+          "equal_weight_return": 0.05761755093973253,
+          "lmart_return": 0.06172790514945592,
+          "lrank_return": -0.0023770128905915566,
+          "spy_return": 0.11495064395869448
+        },
+        {
+          "timestamp": "2025-11-25 00:00:00+00:00",
+          "equal_weight_return": 0.05761755093973253,
+          "lmart_return": 0.05191143804606124,
+          "lrank_return": -0.0036726481321021076,
+          "spy_return": 0.11495064395869448
+        },
+        {
+          "timestamp": "2025-11-26 00:00:00+00:00",
+          "equal_weight_return": 0.07568726729804154,
+          "lmart_return": 0.05191143804606124,
+          "lrank_return": -0.0036726481321021076,
+          "spy_return": 0.13320723873557094
+        },
+        {
+          "timestamp": "2025-12-01 00:00:00+00:00",
+          "equal_weight_return": 0.07496064376009137,
+          "lmart_return": 0.06088673201402117,
+          "lrank_return": 0.0022623951098978967,
+          "spy_return": 0.13419091203660294
+        },
+        {
+          "timestamp": "2025-12-03 00:00:00+00:00",
+          "equal_weight_return": 0.07912157467178926,
+          "lmart_return": 0.06088673201402117,
+          "lrank_return": 0.0022623951098978967,
+          "spy_return": 0.1402264408346212
+        },
+        {
+          "timestamp": "2025-12-04 00:00:00+00:00",
+          "equal_weight_return": 0.07912157467178926,
+          "lmart_return": 0.06499645610289928,
+          "lrank_return": -0.0035260824882010766,
+          "spy_return": 0.1402264408346212
+        },
+        {
+          "timestamp": "2025-12-05 00:00:00+00:00",
+          "equal_weight_return": 0.07908543700759707,
+          "lmart_return": 0.06499645610289928,
+          "lrank_return": -0.0035260824882010766,
+          "spy_return": 0.14322742933035304
+        },
+        {
+          "timestamp": "2025-12-09 00:00:00+00:00",
+          "equal_weight_return": 0.06967475361084907,
+          "lmart_return": 0.0689123656277133,
+          "lrank_return": -0.007291012365512106,
+          "spy_return": 0.13880926177611985
+        },
+        {
+          "timestamp": "2025-12-11 00:00:00+00:00",
+          "equal_weight_return": 0.08617706164338101,
+          "lmart_return": 0.0689123656277133,
+          "lrank_return": -0.007291012365512106,
+          "spy_return": 0.14902953195127244
+        },
+        {
+          "timestamp": "2025-12-12 00:00:00+00:00",
+          "equal_weight_return": 0.08617706164338101,
+          "lmart_return": 0.06138230205961426,
+          "lrank_return": -0.011806464754833601,
+          "spy_return": 0.14902953195127244
+        },
+        {
+          "timestamp": "2025-12-15 00:00:00+00:00",
+          "equal_weight_return": 0.08407511244833499,
+          "lmart_return": 0.06138230205961426,
+          "lrank_return": -0.011806464754833601,
+          "spy_return": 0.13495788376135653
+        },
+        {
+          "timestamp": "2025-12-17 00:00:00+00:00",
+          "equal_weight_return": 0.07360401334240096,
+          "lmart_return": 0.057505288666140464,
+          "lrank_return": -0.006881339591984337,
+          "spy_return": 0.11940226071456927
+        },
+        {
+          "timestamp": "2025-12-19 00:00:00+00:00",
+          "equal_weight_return": 0.07882600672569251,
+          "lmart_return": 0.057505288666140464,
+          "lrank_return": -0.006881339591984337,
+          "spy_return": 0.1380774835365286
+        },
+        {
+          "timestamp": "2025-12-22 00:00:00+00:00",
+          "equal_weight_return": 0.07882600672569251,
+          "lmart_return": 0.06799999213654928,
+          "lrank_return": -0.006595198107919198,
+          "spy_return": 0.1380774835365286
+        },
+        {
+          "timestamp": "2025-12-23 00:00:00+00:00",
+          "equal_weight_return": 0.08800857633811265,
+          "lmart_return": 0.06799999213654928,
+          "lrank_return": -0.006595198107919198,
+          "spy_return": 0.15040146224313622
+        },
+        {
+          "timestamp": "2025-12-26 00:00:00+00:00",
+          "equal_weight_return": 0.09216080006636651,
+          "lmart_return": 0.06215424755891541,
+          "lrank_return": -0.009352222660444665,
+          "spy_return": 0.15433112780652647
+        }
+      ],
+      "contract": [
+        {
+          "item": "Universe",
+          "phase_value": "11 SPDR sector ETFs, 2018\u20132025"
+        },
+        {
+          "item": "Label horizon",
+          "phase_value": "3 bars: open t+1 to open t+4"
+        },
+        {
+          "item": "Split",
+          "phase_value": "70/15/15 purged; no WFO"
+        },
+        {
+          "item": "Portfolio",
+          "phase_value": "Top 2 long + bottom 2 short"
+        },
+        {
+          "item": "Changes",
+          "phase_value": "Baseline: fixed 3-bar hold; no TP/SL; no WFO; full-list LambdaMART; no ridge baseline."
+        },
+        {
+          "item": "Loss definition",
+          "phase_value": "LambdaRank-style NDCG-weighted pairwise loss; LightGBM LambdaMART ranking objective"
+        }
+      ],
+      "comparison": [
+        {
+          "model": "LambdaMART",
+          "pairwise_accuracy": 0.49752066115702476,
+          "ndcg": 0.4169380166292025,
+          "sharpe": 0.7063847610638798,
+          "evidence": "test run"
+        },
+        {
+          "model": "LambdaRank",
+          "pairwise_accuracy": 0.5057851239669422,
+          "ndcg": 0.39570348181481435,
+          "sharpe": -0.007307881081613589,
+          "evidence": "test run"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "history",
+      "label": "Preserved training and optimization history",
+      "path": "phase_1/mlflow_metrics.csv",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_csv_auto('phase_1/mlflow_metrics.csv')",
+        "description": "Reads the preserved evidence file phase_1/mlflow_metrics.csv.",
+        "tables_used": [
+          "phase_1/mlflow_metrics.csv"
+        ],
+        "filters": [
+          "No row filter; report datasets are bounded during packaging."
+        ],
+        "metric_definitions": {
+          "pairwise_accuracy": "Correctly ordered within-date pairs divided by comparable pairs.",
+          "sharpe": "Mean periodic return divided by sample standard deviation, annualized with zero risk-free rate."
+        }
+      }
+    },
+    {
+      "id": "comparison",
+      "label": "Phase comparison evidence",
+      "path": "phase_1/comparison.csv",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_csv_auto('phase_1/comparison.csv')",
+        "description": "Reads the preserved evidence file phase_1/comparison.csv.",
+        "tables_used": [
+          "phase_1/comparison.csv"
+        ],
+        "filters": [
+          "No row filter; report datasets are bounded during packaging."
+        ],
+        "metric_definitions": {
+          "pairwise_accuracy": "Correctly ordered within-date pairs divided by comparable pairs.",
+          "sharpe": "Mean periodic return divided by sample standard deviation, annualized with zero risk-free rate."
+        }
+      }
+    },
+    {
+      "id": "dataset",
+      "label": "SPDR sector and SPY daily bars",
+      "path": "database/datasets/spdr_sectors_2018_2025.csv",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_csv_auto('database/datasets/spdr_sectors_2018_2025.csv')",
+        "description": "Reads the preserved evidence file database/datasets/spdr_sectors_2018_2025.csv.",
+        "tables_used": [
+          "database/datasets/spdr_sectors_2018_2025.csv"
+        ],
+        "filters": [
+          "No row filter; report datasets are bounded during packaging."
+        ],
+        "metric_definitions": {
+          "pairwise_accuracy": "Correctly ordered within-date pairs divided by comparable pairs.",
+          "sharpe": "Mean periodic return divided by sample standard deviation, annualized with zero risk-free rate."
+        }
+      }
+    }
+  ]
+}
